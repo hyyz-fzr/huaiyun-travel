@@ -1,0 +1,11 @@
+{
+  "$schema": "https://railway.app/railway.schema.json",
+  "build": {
+    "builder": "RAILWAY_NIXPACKS",
+    "buildCommand": "cd backend && ./mvnw clean package -DskipTests"
+  },
+  "deploy": {
+    "startCommand": "cd backend && java -jar target/hyyz-backend-1.0.0.jar",
+    "restartPolicyType": "ON_FAILURE"
+  }
+}

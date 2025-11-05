@@ -1,0 +1,105 @@
+# 应用配置
+spring:
+  application:
+    name: huaiyun-travel-backend
+  
+  # 数据源配置 - 优先使用环境变量
+  datasource:
+    url: ${DATABASE_URL:jdbc:h2:mem:huaiyun_db;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE}
+    username: ${DATABASE_USERNAME:sa}
+    password: ${DATABASE_PASSWORD:}
+    driver-class-name: ${DATABASE_DRIVER:org.h2.Driver}
+  
+  # JPA配置
+  jpa:
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:update}
+    show-sql: ${JPA_SHOW_SQL:true}
+    properties:
+      hibernate:
+        dialect: ${JPA_DIALECT:org.hibernate.dialect.H2Dialect}
+        format_sql: true
+    database-platform: ${JPA_PLATFORM:org.hibernate.dialect.H2Dialect}
+  
+  # 文件上传配置
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 20MB
+  
+  # H2数据库（开发环境）
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+# 服务器配置
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /api
+  tomcat:
+    max-swallow-size: 20MB
+
+# 日志配置
+logging:
+  level:
+    com.hyyz: ${LOG_LEVEL:INFO}
+    org.springframework.security: ${SECURITY_LOG_LEVEL:WARN}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+
+# 应用自定义配置
+app:
+  jwt:
+    secret: ${JWT_SECRET:huaiyun-travel-super-secret-key-2024-cloud-deployment}
+    expiration: ${JWT_EXPIRATION:86400000}
+  upload:
+    path: ${UPLOAD_PATH:./uploads/}
+    access-path: /uploads/**
+
+# Swagger配置
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+
+# 生产环境配置
+---
+spring:
+  config:
+    activate:
+      on-profile: prod
+  datasource:
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+    password: ${DATABASE_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+app:
+  upload:
+    path: /data/uploads/
+
+# 开发环境配置
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  datasource:
+    url: jdbc:h2:mem:huaiyun_db
+    username: sa
+    password: 
+  jpa:
+    hibernate:
+      ddl-auto: create-drop

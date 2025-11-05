@@ -1,0 +1,14 @@
+[phases.setup]
+cmds = ["cd backend && ./mvnw dependency:resolve"]
+
+[phases.build]
+cmds = ["cd backend && ./mvnw clean package -DskipTests"]
+
+[phases.install]
+cmds = ["echo 'Installation complete'"]
+
+[start]
+cmd = "cd backend && java -jar target/hyyz-backend-1.0.0.jar"
+
+[environment]
+JAVA_VERSION = "17"

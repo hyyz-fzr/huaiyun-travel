@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!-- 对应ProductMapper接口全路径 -->
+<mapper namespace="com.hyyz.mapper.ProductMapper">
+
+    <!-- 基础CRUD已通过BaseMapper实现，如需复杂查询（如按价格筛选），在此添加SQL -->
+    <!-- 示例：根据价格区间查询商品 -->
+    <select id="selectByPriceRange" resultType="com.hyyz.entity.Product">
+        SELECT * FROM product
+        WHERE price BETWEEN #{minPrice} AND #{maxPrice}
+        ORDER BY create_time DESC
+    </select>
+
+</mapper>
