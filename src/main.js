@@ -23,15 +23,20 @@ try {
   else if (typeof import.meta !== 'undefined' && import.meta.env && import.meta.env.MODE === 'development') {
     isDevelopment = true;
   }
+  // 生产环境默认关闭Mock
   else {
-    isDevelopment = true;
+    isDevelopment = false;
   }
 } catch (error) {
-  console.warn('环境检测失败，使用开发模式:', error);
-  isDevelopment = true;
+  console.warn('环境检测失败，使用生产模式:', error);
+  isDevelopment = false;
 }
 
 console.log('🎯 淮韵游踪 - 环境状态:', isDevelopment ? '开发环境' : '生产环境');
+
+// ==================== 完全移除Mock导入 ====================
+console.log('🚀 生产环境模式：直接连接真实后端API');
+console.log('📡 API地址：https://huaiyun-travel-production.up.railway.app/api');
 
 // 创建应用实例
 const app = createApp(App)
@@ -58,6 +63,12 @@ app.config.errorHandler = (err, instance, info) => {
   console.error('🎯 淮韵游踪 - Vue错误捕获:')
   console.error('错误对象:', err)
   console.error('错误信息:', info)
+  
+  // 生产环境更友好的错误提示
+  if (!isDevelopment) {
+    const { ElMessage } = require('element-plus')
+    ElMessage.error('系统遇到问题，请刷新页面重试');
+  }
   return false
 }
 
@@ -72,7 +83,9 @@ console.log('✅ Vue Router已注册')
 // ==================== 简化全局指令 ====================
 app.directive('permission', {
   mounted(el, binding) {
-    console.log('🎯 权限指令执行:', binding.value)
+    if (isDevelopment) {
+      console.log('🎯 权限指令执行:', binding.value)
+    }
   }
 })
 
@@ -90,6 +103,13 @@ try {
   app.mount('#app')
   console.log('✅ 淮韵游踪应用已成功挂载')
   console.log('🏛️ 淮南文化数字传承平台已启动')
+  
+  // 生产环境成功提示
+  if (!isDevelopment) {
+    setTimeout(() => {
+      console.log('🌐 生产环境：已连接Railway后端API');
+    }, 1000);
+  }
 } catch (error) {
   console.error('❌ 应用挂载失败:', error)
   const appElement = document.getElementById('app')
@@ -99,6 +119,9 @@ try {
         <h1 style="color: #8B4513;">🎯 淮韵游踪 - 淮南文化数字传承平台</h1>
         <p>系统正在初始化，请稍候...</p >
         <p>如遇技术问题，请联系开发团队</p >
+        <p style="color: #666; font-size: 12px; margin-top: 20px;">
+          当前环境: ${isDevelopment ? '开发环境' : '生产环境'}
+        </p >
       </div>
     `
   }

@@ -4,40 +4,35 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: 'App',
-  mounted() {
-    // 设置页面标题
-    document.title = process.env.VUE_APP_TITLE
-    const userStore = useUserStore()
-    userStore.initUser()
-  }
-}
+<script setup>
+import { onMounted } from 'vue'
+import { useUserStore } from '@/stores/user'
+
+// 初始化用户状态
+const userStore = useUserStore()
+
+onMounted(() => {
+  // 设置页面标题
+  document.title = process.env.VUE_APP_TITLE || '淮韵游踪 - 淮南文化数字传承平台'
+  
+  // 初始化用户信息
+  userStore.initUser()
+  
+  console.log('淮韵游踪应用已初始化')
+})
 </script>
 
-<style lang="scss">
+<style>
+/* 全局样式 */
 #app {
-  font-family: 'Helvetica Neue', Helvetica, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', '微软雅黑', Arial, sans-serif;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
   min-height: 100vh;
-}
-
-// 全局样式重置
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
-html, body {
-  height: 100%;
   background-color: #f5f7fa;
 }
 
-// 滚动条样式
+/* 全局滚动条样式 */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;

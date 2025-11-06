@@ -1,714 +1,414 @@
 <template>
-  <div class="home">
-    <!-- 轮播图 -->
-    <el-carousel height="400px" :interval="5000" arrow="always">
-      <el-carousel-item v-for="item in banners" :key="item.id">
-        <div class="banner-item" :style="{ backgroundImage: `url(${item.image})` }">
-          <div class="banner-content">
-            <h2 class="banner-title">{{ item.title }}</h2>
-            <p class="banner-desc">{{ item.description }}</p >
-            <el-button type="primary" size="large" @click="handleBannerClick(item)">
-              了解更多
-            </el-button>
-          </div>
-        </div>
-      </el-carousel-item>
-    </el-carousel>
-
-    <!-- 特色模块 -->
-    <div class="feature-section">
-      <div class="container">
-        <h2 class="section-title">淮南文化特色</h2>
-        <div class="feature-grid">
-          <div 
-            v-for="feature in features" 
-            :key="feature.id"
-            class="feature-card"
-            @click="$router.push(feature.path)"
-          >
-            <div class="feature-icon">
-              <el-icon :size="48" :color="feature.color">
-                <component :is="feature.icon" />
-              </el-icon>
-            </div>
-            <h3 class="feature-title">{{ feature.title }}</h3>
-            <p class="feature-desc">{{ feature.description }}</p >
-          </div>
-        </div>
-      </div>
+  <div class="home-container">
+    <!-- 页面头部 -->
+    <div class="home-header">
+      <h1 class="welcome-title">欢迎来到淮韵游踪</h1>
+      <p class="welcome-subtitle">探索淮南文化，传承千年智慧</p >
     </div>
 
-    <!-- 文化遗产推荐 -->
-    <div class="recommend-section">
-      <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">推荐文化遗产</h2>
-          <el-button link @click="$router.push('/heritage/list')">
-            查看更多 <el-icon><ArrowRight /></el-icon>
-          </el-button>
-        </div>
-        <div class="heritage-grid">
-          <el-card 
-            v-for="item in recommendedHeritage" 
-            :key="item.id"
-            class="heritage-card"
-            :body-style="{ padding: '0' }"
-            @click="$router.push(`/heritage/detail/${item.id}`)"
-          >
-            <div class="heritage-image">
-              <img :src="item.image" :alt="item.name" />
-              <div class="heritage-tag">{{ item.category }}</div>
+    <!-- 数据统计卡片 -->
+    <div class="stats-cards">
+      <el-row :gutter="20">
+        <el-col :xs="12" :sm="6" v-for="card in statsCards" :key="card.id">
+          <el-card shadow="hover" class="stat-card">
+            <div class="card-content">
+              <div class="card-icon" :style="{ color: card.color }">
+                <i :class="card.icon"></i>
+              </div>
+              <div class="card-info">
+                <div class="card-value">{{ card.value }}</div>
+                <div class="card-label">{{ card.label }}</div>
+              </div>
             </div>
-            <div class="heritage-content">
-              <h3 class="heritage-name">{{ item.name }}</h3>
-              <p class="heritage-desc">{{ item.description }}</p >
-              <div class="heritage-meta">
-                <span class="views">
-                  <el-icon><View /></el-icon>
+          </el-card>
+        </el-col>
+      </el-row>
+    </div>
+
+    <!-- 功能导航 -->
+    <div class="feature-nav">
+      <h2 class="section-title">文化探索</h2>
+      <el-row :gutter="20">
+        <el-col 
+          :xs="12" 
+          :sm="8" 
+          :md="6" 
+          v-for="feature in features" 
+          :key="feature.id"
+        >
+          <div class="feature-card" @click="navigateTo(feature.path)">
+            <div class="feature-icon" :style="{ backgroundColor: feature.bgColor }">
+              <i :class="feature.icon"></i>
+            </div>
+            <div class="feature-info">
+              <h3>{{ feature.title }}</h3>
+              <p>{{ feature.description }}</p >
+            </div>
+          </div>
+        </el-col>
+      </el-row>
+    </div>
+
+    <!-- 最新内容 -->
+    <div class="latest-content">
+      <h2 class="section-title">最新动态</h2>
+      <el-row :gutter="20">
+        <el-col :xs="24" :sm="12" :md="8" v-for="item in latestItems" :key="item.id">
+          <el-card class="content-card" shadow="hover">
+            <div class="content-image">
+              <img :src="item.image" :alt="item.title" />
+            </div>
+            <div class="content-info">
+              <h3>{{ item.title }}</h3>
+              <p class="content-desc">{{ item.description }}</p >
+              <div class="content-meta">
+                <span class="meta-item">
+                  <i class="el-icon-time"></i>
+                  {{ item.time }}
+                </span>
+                <span class="meta-item">
+                  <i class="el-icon-view"></i>
                   {{ item.views }}
                 </span>
-                <span class="likes">
-                  <el-icon><Star /></el-icon>
-                  {{ item.likes }}
-                </span>
               </div>
             </div>
           </el-card>
-        </div>
-      </div>
+        </el-col>
+      </el-row>
     </div>
-
-    <!-- 热门产品 -->
-    <div class="product-section">
-      <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">热门文创产品</h2>
-          <el-button link @click="$router.push('/products/list')">
-            查看更多 <el-icon><ArrowRight /></el-icon>
-          </el-button>
-        </div>
-        <div class="product-grid">
-          <el-card 
-            v-for="product in hotProducts" 
-            :key="product.id"
-            class="product-card"
-            :body-style="{ padding: '0' }"
-            @click="$router.push(`/products/detail/${product.id}`)"
-          >
-            <div class="product-image">
-              <img :src="product.image" :alt="product.name" />
-              <el-tag v-if="product.stock < 10" type="danger" class="stock-tag">
-                仅剩{{ product.stock }}件
-              </el-tag>
-            </div>
-            <div class="product-content">
-              <h3 class="product-name">{{ product.name }}</h3>
-              <p class="product-desc">{{ product.description }}</p >
-              <div class="product-footer">
-                <span class="product-price">¥{{ product.price }}</span>
-                <el-button 
-                  type="primary" 
-                  size="small" 
-                  @click.stop="handleAddToCart(product)"
-                >
-                  加入购物车
-                </el-button>
-              </div>
-            </div>
-          </el-card>
-        </div>
-      </div>
-    </div>
-
-    <!-- 社区动态 -->
-    <div class="community-section">
-      <div class="container">
-        <div class="section-header">
-          <h2 class="section-title">社区动态</h2>
-          <el-button link @click="$router.push('/posts/list')">
-            查看更多 <el-icon><ArrowRight /></el-icon>
-          </el-button>
-        </div>
-        <div class="post-list">
-          <el-card 
-            v-for="post in hotPosts" 
-            :key="post.id"
-            class="post-card"
-          >
-            <template #header>
-              <div class="post-header">
-                <div class="user-info">
-                  <el-avatar :size="32" :src="post.author.avatar" />
-                  <div class="user-details">
-                    <span class="username">{{ post.author.username }}</span>
-                    <span class="post-time">{{ post.createTime }}</span>
-                  </div>
-                </div>
-                <el-tag :type="post.tagType">{{ post.tag }}</el-tag>
-              </div>
-            </template>
-            <h3 class="post-title" @click="$router.push(`/posts/detail/${post.id}`)">
-              {{ post.title }}
-            </h3>
-            <p class="post-content">{{ post.content }}</p >
-            <div class="post-images" v-if="post.images && post.images.length">
-              <img 
-                v-for="(img, index) in post.images.slice(0, 3)" 
-                :key="index"
-                :src="img" 
-                class="post-image"
-                @click="previewImage(post.images, index)"
-              />
-            </div>
-            <div class="post-actions">
-              <span class="action-item">
-                <el-icon><View /></el-icon>
-                {{ post.views }}
-              </span>
-              <span class="action-item">
-                <el-icon><ChatDotRound /></el-icon>
-                {{ post.comments }}
-              </span>
-              <span class="action-item">
-                <el-icon><Star /></el-icon>
-                {{ post.likes }}
-              </span>
-            </div>
-          </el-card>
-        </div>
-      </div>
-    </div>
-
-    <!-- 图片预览对话框 -->
-    <el-dialog v-model="imagePreviewVisible" title="图片预览" width="80%">
-      <el-carousel :initial-index="previewIndex" height="500px">
-        <el-carousel-item v-for="(img, index) in previewImages" :key="index">
-          <img :src="img" class="preview-image" />
-        </el-carousel-item>
-      </el-carousel>
-    </el-dialog>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { useHeritageStore } from '@/stores/heritage'
-import { useProductStore } from '@/stores/product'
-import { usePostStore } from '@/stores/post'
-import { useCartStore } from '@/stores/cart'
 import { ElMessage } from 'element-plus'
-import {
-  View,
-  Star,
-  ChatDotRound,
-  ArrowRight
-} from '@element-plus/icons-vue'
 
 const router = useRouter()
-const heritageStore = useHeritageStore()
-const productStore = useProductStore()
-const postStore = usePostStore()
-const cartStore = useCartStore()
 
-const banners = ref([
+// 统计卡片数据
+const statsCards = ref([
   {
     id: 1,
-    image: '/images/banners/huainan-banner1.jpg',
-    title: '探索淮南千年文化',
-    description: '豆腐文化发源地，八公山传说之乡',
-    path: '/heritage/list'
+    icon: 'el-icon-collection',
+    label: '文化遗产',
+    value: '128',
+    color: '#409EFF'
   },
   {
     id: 2,
-    image: '/images/banners/huainan-banner2.jpg',
-    title: '特色文创产品',
-    description: '把淮南文化带回家',
-    path: '/products/list'
+    icon: 'el-icon-goods',
+    label: '文创产品',
+    value: '56',
+    color: '#67C23A'
   },
   {
     id: 3,
-    image: '/images/banners/huainan-banner3.jpg',
-    title: '文化社区交流',
-    description: '与同好分享文化见解',
-    path: '/posts/list'
-  }
-])
-
-const features = ref([
-  {
-    id: 1,
-    icon: Histogram,
-    title: '文化遗产',
-    description: '探索淮南丰富的文化遗产和历史故事',
-    path: '/heritage/list',
-    color: '#409eff'
-  },
-  {
-    id: 2,
-    icon: ShoppingBag,
-    title: '文创产品',
-    description: '购买独具特色的淮南文创纪念品',
-    path: '/products/list',
-    color: '#67c23a'
-  },
-  {
-    id: 3,
-    icon: ChatDotRound,
-    title: '文化社区',
-    description: '与志同道合的朋友交流文化见解',
-    path: '/posts/list',
-    color: '#e6a23c'
+    icon: 'el-icon-document',
+    label: '文化帖子',
+    value: '342',
+    color: '#E6A23C'
   },
   {
     id: 4,
-    icon: User,
-    title: '个人空间',
-    description: '管理您的收藏、订单和个性化内容',
-    path: '/profile',
-    color: '#f56c6c'
+    icon: 'el-icon-user',
+    label: '活跃用户',
+    value: '1,234',
+    color: '#F56C6C'
   }
 ])
 
-const recommendedHeritage = ref([])
-const hotProducts = ref([])
-const hotPosts = ref([])
-const imagePreviewVisible = ref(false)
-const previewImages = ref([])
-const previewIndex = ref(0)
-
-onMounted(async () => {
-  await loadHomeData()
-})
-
-const loadHomeData = async () => {
-  try {
-    // 加载推荐文化遗产
-    const heritageData = await heritageStore.getRecommendedHeritage()
-    recommendedHeritage.value = heritageData.slice(0, 4)
-    
-    // 加载热门产品
-    await productStore.getProducts({ sort: 'hot', pageSize: 4 })
-    hotProducts.value = productStore.products.slice(0, 4)
-    
-    // 加载热门帖子
-    await postStore.getPosts({ sort: 'hot', pageSize: 3 })
-    hotPosts.value = postStore.posts.slice(0, 3)
-  } catch (error) {
-    ElMessage.error('加载首页数据失败')
+// 功能导航数据
+const features = ref([
+  {
+    id: 1,
+    icon: 'el-icon-collection',
+    title: '文化遗产',
+    description: '探索淮南丰富的历史文化遗产',
+    path: '/heritage',
+    bgColor: '#409EFF'
+  },
+  {
+    id: 2,
+    icon: 'el-icon-goods',
+    title: '文创产品',
+    description: '购买精美的淮南文化创意产品',
+    path: '/products',
+    bgColor: '#67C23A'
+  },
+  {
+    id: 3,
+    icon: 'el-icon-chat-dot-round',
+    title: '文化社区',
+    description: '分享交流淮南文化见闻',
+    path: '/community',
+    bgColor: '#E6A23C'
+  },
+  {
+    id: 4,
+    icon: 'el-icon-video-camera',
+    title: 'VR体验',
+    description: '沉浸式体验淮南文化场景',
+    path: '/vr-experience',
+    bgColor: '#F56C6C'
+  },
+  {
+    id: 5,
+    icon: 'el-icon-notebook-2',
+    title: '学习资料',
+    description: '学习淮南文化知识',
+    path: '/learning',
+    bgColor: '#909399'
+  },
+  {
+    id: 6,
+    icon: 'el-icon-map-location',
+    title: '文化地图',
+    description: '发现身边的淮南文化地点',
+    path: '/culture-map',
+    bgColor: '#8E44AD'
   }
+])
+
+// 最新内容数据
+const latestItems = ref([
+  {
+    id: 1,
+    title: '八公山历史文化探秘',
+    description: '深入探索八公山的历史文化和传说故事...',
+    image: '/images/heritage/bagongshan.jpg',
+    time: '2小时前',
+    views: '156'
+  },
+  {
+    id: 2,
+    title: '豆腐制作工艺传承',
+    description: '了解淮南豆腐的传统制作工艺和现代创新...',
+    image: '/images/heritage/doufu.jpg',
+    time: '5小时前',
+    views: '234'
+  },
+  {
+    id: 3,
+    title: '传统剪纸艺术展',
+    description: '欣赏精美的淮南传统剪纸艺术作品...',
+    image: '/images/heritage/papercut.jpg',
+    time: '1天前',
+    views: '189'
+  }
+])
+
+// 导航方法
+const navigateTo = (path) => {
+  router.push(path)
 }
 
-const handleBannerClick = (banner) => {
-  router.push(banner.path)
-}
-
-const handleAddToCart = (product) => {
-  cartStore.addToCart(product)
-}
-
-const previewImage = (images, index) => {
-  previewImages.value = images
-  previewIndex.value = index
-  imagePreviewVisible.value = true
-}
+// 页面加载完成
+onMounted(() => {
+  console.log('🏠 首页加载完成')
+})
 </script>
 
-<style scoped lang="scss">
-.home {
-  min-height: 100vh;
+<style scoped>
+.home-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-.banner-item {
-  height: 400px;
-  background-size: cover;
-  background-position: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.4);
-  }
-}
-
-.banner-content {
-  position: relative;
-  z-index: 1;
+/* 头部样式 */
+.home-header {
   text-align: center;
+  margin-bottom: 40px;
+  padding: 40px 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
   color: white;
-  max-width: 600px;
-  padding: 0 20px;
 }
 
-.banner-title {
-  font-size: 2.5em;
-  font-weight: bold;
-  margin-bottom: 16px;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+.welcome-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
 }
 
-.banner-desc {
-  font-size: 1.2em;
-  margin-bottom: 24px;
+.welcome-subtitle {
+  font-size: 1.2rem;
   opacity: 0.9;
 }
 
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
+/* 统计卡片样式 */
+.stats-cards {
+  margin-bottom: 40px;
+}
+
+.stat-card {
+  border-radius: 8px;
+  border: none;
+}
+
+.card-content {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+}
+
+.card-icon {
+  font-size: 2rem;
+  margin-right: 15px;
+}
+
+.card-info {
+  flex: 1;
+}
+
+.card-value {
+  font-size: 1.8rem;
+  font-weight: bold;
+  color: #303133;
+}
+
+.card-label {
+  font-size: 0.9rem;
+  color: #909399;
+  margin-top: 5px;
+}
+
+/* 功能导航样式 */
+.feature-nav {
+  margin-bottom: 40px;
 }
 
 .section-title {
-  font-size: 2em;
-  font-weight: bold;
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 20px;
   color: #303133;
-  margin-bottom: 30px;
-  text-align: center;
-}
-
-.section-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 30px;
-}
-
-.feature-section {
-  padding: 60px 0;
-  background: white;
-}
-
-.feature-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 30px;
+  border-left: 4px solid #409EFF;
+  padding-left: 12px;
 }
 
 .feature-card {
-  text-align: center;
-  padding: 40px 20px;
-  border-radius: 12px;
-  background: #f8f9fa;
-  transition: all 0.3s ease;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
   cursor: pointer;
+  transition: all 0.3s ease;
+  border: 1px solid #e4e7ed;
+}
 
-  &:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    background: white;
-  }
+.feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
 }
 
 .feature-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 15px;
+  color: white;
+  font-size: 1.5rem;
+}
+
+.feature-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #303133;
+}
+
+.feature-info p {
+  font-size: 0.9rem;
+  color: #606266;
+  line-height: 1.4;
+}
+
+/* 最新内容样式 */
+.content-card {
+  border-radius: 8px;
+  border: none;
   margin-bottom: 20px;
+  transition: all 0.3s ease;
 }
 
-.feature-title {
-  font-size: 1.5em;
-  font-weight: bold;
-  margin-bottom: 12px;
-  color: #303133;
+.content-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
-.feature-desc {
-  color: #606266;
-  line-height: 1.6;
-}
-
-.recommend-section {
-  padding: 60px 0;
-  background: #f5f7fa;
-}
-
-.heritage-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 24px;
-}
-
-.heritage-card {
-  cursor: pointer;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: translateY(-4px);
-  }
-}
-
-.heritage-image {
-  position: relative;
-  height: 200px;
-  overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-  }
-
-  .heritage-tag {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 12px;
-  }
-
-  &:hover img {
-    transform: scale(1.05);
-  }
-}
-
-.heritage-content {
-  padding: 16px;
-}
-
-.heritage-name {
-  font-size: 1.2em;
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: #303133;
-}
-
-.heritage-desc {
-  color: #606266;
-  font-size: 0.9em;
-  line-height: 1.5;
-  margin-bottom: 12px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.heritage-meta {
-  display: flex;
-  gap: 16px;
-  color: #909399;
-  font-size: 0.8em;
-
-  span {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-}
-
-.product-section {
-  padding: 60px 0;
-  background: white;
-}
-
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 24px;
-}
-
-.product-card {
-  cursor: pointer;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: translateY(-4px);
-  }
-}
-
-.product-image {
-  position: relative;
-  height: 200px;
-  overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .stock-tag {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-  }
-}
-
-.product-content {
-  padding: 16px;
-}
-
-.product-name {
-  font-size: 1.1em;
-  font-weight: bold;
-  margin-bottom: 8px;
-  color: #303133;
-}
-
-.product-desc {
-  color: #606266;
-  font-size: 0.9em;
-  line-height: 1.5;
-  margin-bottom: 12px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.product-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.product-price {
-  font-size: 1.2em;
-  font-weight: bold;
-  color: #f56c6c;
-}
-
-.community-section {
-  padding: 60px 0;
-  background: #f5f7fa;
-}
-
-.post-list {
-  display: grid;
-  gap: 20px;
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.post-card {
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: translateX(4px);
-  }
-}
-
-.post-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.user-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.user-details {
-  display: flex;
-  flex-direction: column;
-}
-
-.username {
-  font-weight: bold;
-  color: #303133;
-}
-
-.post-time {
-  font-size: 0.8em;
-  color: #909399;
-}
-
-.post-title {
-  font-size: 1.2em;
-  font-weight: bold;
-  margin-bottom: 12px;
-  color: #303133;
-  cursor: pointer;
-
-  &:hover {
-    color: #409eff;
-  }
-}
-
-.post-content {
-  color: #606266;
-  line-height: 1.6;
-  margin-bottom: 16px;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.post-images {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.post-image {
+.content-image {
   width: 100%;
-  height: 100px;
+  height: 160px;
+  overflow: hidden;
+  border-radius: 6px 6px 0 0;
+}
+
+.content-image img {
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: scale(1.05);
-  }
 }
 
-.post-actions {
+.content-info {
+  padding: 15px;
+}
+
+.content-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #303133;
+}
+
+.content-desc {
+  font-size: 0.9rem;
+  color: #606266;
+  line-height: 1.4;
+  margin-bottom: 12px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.content-meta {
   display: flex;
-  gap: 20px;
+  justify-content: space-between;
+  font-size: 0.8rem;
   color: #909399;
-  font-size: 0.9em;
 }
 
-.action-item {
+.meta-item {
   display: flex;
   align-items: center;
-  gap: 4px;
 }
 
-.preview-image {
-  width: 100%;
-  height: 500px;
-  object-fit: contain;
+.meta-item i {
+  margin-right: 4px;
 }
 
-// 响应式设计
+/* 响应式设计 */
 @media (max-width: 768px) {
-  .banner-title {
-    font-size: 2em;
+  .home-container {
+    padding: 10px;
   }
-
-  .section-header {
-    flex-direction: column;
-    gap: 16px;
-    text-align: center;
+  
+  .welcome-title {
+    font-size: 2rem;
   }
-
-  .feature-grid {
-    grid-template-columns: 1fr;
+  
+  .home-header {
+    padding: 30px 0;
+    margin-bottom: 20px;
   }
-
-  .heritage-grid,
-  .product-grid {
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  }
-
-  .post-images {
-    grid-template-columns: repeat(2, 1fr);
+  
+  .feature-card {
+    padding: 15px;
   }
 }
 </style>

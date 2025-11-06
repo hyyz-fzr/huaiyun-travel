@@ -108,6 +108,7 @@ export const useUserStore = defineStore('user', () => {
     logout,
     updateUserInfo,
     changePassword,
-    uploadAvatar
+    uploadAvatar,
+    initUser
   }
 })
