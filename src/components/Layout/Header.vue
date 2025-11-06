@@ -10,7 +10,7 @@
     <div class="header-center">
       <el-input
         v-model="searchKeyword"
-        placeholder="搜索文化遗产、文创产品、社区帖子..."
+        placeholder="搜索文化遗产、文创产品、社区内容..."
         class="search-input"
         @keyup.enter="handleSearch"
       >
@@ -21,44 +21,22 @@
     </div>
 
     <div class="header-right">
-      <div class="nav-items">
-        <el-button link @click="$router.push('/')">
-          <el-icon><HomeFilled /></el-icon>
-          首页
+      <div class="user-actions">
+        <el-button v-if="!isLoggedIn" type="primary" @click="$router.push('/login')">
+          登录
         </el-button>
-        
-        <el-dropdown v-if="userStore.isLoggedIn">
+        <el-dropdown v-else>
           <span class="user-info">
-            <el-avatar :size="32" :src="userStore.userInfo?.avatar || ''" />
-            <span class="username">{{ userStore.userInfo?.username }}</span>
-            <el-icon><ArrowDown /></el-icon>
+            <el-avatar :size="32" :src="userStore.avatar" />
+            <span class="username">{{ userStore.username }}</span>
           </span>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item @click="$router.push('/profile')">
-                <el-icon><User /></el-icon>
-                个人中心
-              </el-dropdown-item>
-              <el-dropdown-item @click="$router.push('/my-posts')">
-                <el-icon><Document /></el-icon>
-                我的帖子
-              </el-dropdown-item>
-              <el-dropdown-item @click="$router.push('/favorites')">
-                <el-icon><Star /></el-icon>
-                我的收藏
-              </el-dropdown-item>
-              <el-dropdown-item divided @click="handleLogout">
-                <el-icon><SwitchButton /></el-icon>
-                退出登录
-              </el-dropdown-item>
+              <el-dropdown-item @click="$router.push('/profile')">个人中心</el-dropdown-item>
+              <el-dropdown-item @click="handleLogout">退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-
-        <div v-else class="auth-buttons">
-          <el-button @click="$router.push('/login')">登录</el-button>
-          <el-button type="primary" @click="$router.push('/register')">注册</el-button>
-        </div>
       </div>
     </div>
   </header>
@@ -68,107 +46,73 @@
 import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
-import { 
-  Search, 
-  HomeFilled, 
-  User, 
-  Document, 
-  Star, 
-  SwitchButton,
-  ArrowDown 
-} from '@element-plus/icons-vue'
+import { Search } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
 
 const router = useRouter()
 const userStore = useUserStore()
-
 const searchKeyword = ref('')
+
+const isLoggedIn = userStore.isLoggedIn
 
 const handleSearch = () => {
   if (searchKeyword.value.trim()) {
-    router.push({
-      path: '/search',
-      query: { keyword: searchKeyword.value.trim() }
-    })
-    searchKeyword.value = ''
+    // 执行搜索逻辑
+    console.log('搜索关键词:', searchKeyword.value)
   }
 }
 
-const handleLogout = () => {
-  userStore.logout()
-  router.push('/login')
+const handleLogout = async () => {
+  try {
+    await ElMessageBox.confirm('确定要退出登录吗？', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+    userStore.logout()
+    ElMessage.success('已退出登录')
+    router.push('/')
+  } catch (error) {
+    // 用户取消退出
+  }
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .header {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 60px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 20px;
-  z-index: 1000;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-
-  .header-left {
-    flex: 0 0 auto;
-  }
-
-  .header-center {
-    flex: 1;
-    max-width: 400px;
-    margin: 0 20px;
-  }
-
-  .header-right {
-    flex: 0 0 auto;
-  }
+  height: 60px;
+  background: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .logo {
   display: flex;
   align-items: center;
-  cursor: pointer;
+  gap: 10px;
+}
 
-  img {
-    width: 36px;
-    height: 36px;
-    margin-right: 10px;
-  }
+.logo img {
+  height: 32px;
+}
 
-  .logo-text {
-    font-size: 20px;
-    font-weight: bold;
-    color: white;
-  }
+.logo-text {
+  font-size: 18px;
+  font-weight: bold;
+  color: #8B4513;
 }
 
 .search-input {
-  :deep(.el-input-group__append) {
-    background-color: #409eff;
-    border-color: #409eff;
-    color: white;
-  }
+  width: 400px;
 }
 
-.nav-items {
+.user-actions {
   display: flex;
   align-items: center;
-  gap: 15px;
-
-  .el-button {
-    color: white;
-    border: none;
-
-    &:hover {
-      background-color: rgba(255, 255, 255, 0.1);
-    }
-  }
+  gap: 10px;
 }
 
 .user-info {
@@ -176,53 +120,9 @@ const handleLogout = () => {
   align-items: center;
   gap: 8px;
   cursor: pointer;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: background-color 0.3s;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-
-  .username {
-    font-size: 14px;
-    color: white;
-  }
 }
 
-.auth-buttons {
-  display: flex;
-  gap: 10px;
-
-  .el-button {
-    &:first-child {
-      color: white;
-      border-color: white;
-
-      &:hover {
-        background-color: rgba(255, 255, 255, 0.1);
-      }
-    }
-  }
-}
-
-// 响应式设计
-@media (max-width: 768px) {
-  .header {
-    padding: 0 10px;
-
-    .header-center {
-      margin: 0 10px;
-      max-width: 200px;
-    }
-
-    .logo-text {
-      display: none;
-    }
-
-    .username {
-      display: none;
-    }
-  }
+.username {
+  font-size: 14px;
 }
 </style>
