@@ -1,4 +1,4 @@
-﻿<template>
+<template>
   <div class="register-container">
     <div class="register-form">
       <div class="form-header">
