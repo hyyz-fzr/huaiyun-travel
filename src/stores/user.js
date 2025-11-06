@@ -14,17 +14,36 @@ export const useUserStore = defineStore('user', () => {
   const avatar = computed(() => userInfo.value?.avatar || '')
   const role = computed(() => userInfo.value?.role || 'user')
 
+  // 🎯 修复：添加initUser函数定义
+  const initUser = () => {
+    const savedToken = localStorage.getItem('token')
+    const savedUserInfo = localStorage.getItem('userInfo')
+
+    if (savedToken) {
+      token.value = savedToken
+    }
+
+    if (savedUserInfo) {
+      try {
+        userInfo.value = JSON.parse(savedUserInfo)
+      } catch (error) {
+        console.error('解析用户信息失败:', error)
+        localStorage.removeItem('userInfo')
+      }
+    }
+  }
+
   // 登录
   const login = async (loginData) => {
     try {
       const response = await userApi.login(loginData)
       token.value = response.data.token
       userInfo.value = response.data.userInfo
-      
+
       // 保存到本地存储
       localStorage.setItem('token', token.value)
       localStorage.setItem('userInfo', JSON.stringify(userInfo.value))
-      
+
       ElMessage.success('登录成功')
       return response
     } catch (error) {
@@ -109,6 +128,6 @@ export const useUserStore = defineStore('user', () => {
     updateUserInfo,
     changePassword,
     uploadAvatar,
-    initUser
+    initUser // 🎯 现在这个函数有定义了
   }
 })
