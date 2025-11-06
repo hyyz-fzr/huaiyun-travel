@@ -1,181 +1,229 @@
-<template>
+﻿<template>
   <div class="content-growth-chart">
-    <div v-if="loading" class="chart-loading">
-      <el-skeleton :rows="5" animated />
+    <div class="chart-header">
+      <h3>内容增长趋势</h3>
+      <div class="chart-controls">
+        <el-select v-model="timeRange" size="small" @change="handleTimeRangeChange">
+          <el-option label="最近7天" value="7d"></el-option>
+          <el-option label="最近30天" value="30d"></el-option>
+          <el-option label="最近90天" value="90d"></el-option>
+        </el-select>
+        <el-button size="small" @click="handleRefresh">
+          <i class="el-icon-refresh"></i>
+        </el-button>
+      </div>
     </div>
-    <div v-else-if="!data || data.length === 0" class="chart-empty">
-      <el-empty description="暂无数据" />
+
+    <div class="chart-container">
+      <div class="chart-placeholder">
+        <div class="placeholder-content">
+          <i class="el-icon-data-analysis"></i>
+          <p>内容增长趋势图表</p >
+          <div class="mock-chart">
+            <div class="chart-bars">
+              <div 
+                v-for="(item, index) in mockData" 
+                :key="index"
+                class="chart-bar"
+                :style="{ height: item.value * 2 + 'px' }"
+                :title="`${item.date}: ${item.value}篇`"
+              ></div>
+            </div>
+            <div class="chart-labels">
+              <span v-for="(item, index) in mockData" :key="index">
+                {{ item.date.split('-').slice(1).join('/') }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div v-else ref="chartRef" class="chart-container"></div>
+
+    <div class="chart-stats">
+      <div class="stat-item">
+        <span class="stat-label">总内容数</span>
+        <span class="stat-value">1,234</span>
+        <span class="stat-trend up">+12%</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">日均增长</span>
+        <span class="stat-value">28</span>
+        <span class="stat-trend up">+5%</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-label">完成率</span>
+        <span class="stat-value">85%</span>
+        <span class="stat-trend up">+3%</span>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, watch } from 'vue'
-import * as echarts from 'echarts'
+import { ref, onMounted } from 'vue'
+import { ElMessage } from 'element-plus'
 
-const props = defineProps({
-  data: {
-    type: Array,
-    default: () => []
-  },
-  type: {
-    type: String,
-    default: 'day'
-  },
-  loading: {
-    type: Boolean,
-    default: false
-  }
-})
+const timeRange = ref('30d')
 
-const chartRef = ref()
-let chartInstance = null
+const mockData = ref([
+  { date: '2024-01-01', value: 23 },
+  { date: '2024-01-02', value: 45 },
+  { date: '2024-01-03', value: 56 },
+  { date: '2024-01-04', value: 34 },
+  { date: '2024-01-05', value: 67 },
+  { date: '2024-01-06', value: 78 },
+  { date: '2024-01-07', value: 89 }
+])
 
-// 初始化图表
-const initChart = () => {
-  if (!chartRef.value) return
-  
-  chartInstance = echarts.init(chartRef.value)
-  updateChart()
+const handleTimeRangeChange = (value) => {
+  ElMessage.info(`时间范围切换为: ${value}`)
+  // 这里应该根据时间范围重新获取数据
+  loadChartData(value)
 }
 
-// 更新图表数据
-const updateChart = () => {
-  if (!chartInstance || !props.data || props.data.length === 0) return
-
-  const option = {
-    tooltip: {
-      trigger: 'axis',
-      axisPointer: {
-        type: 'shadow'
-      }
-    },
-    legend: {
-      data: ['文化见闻', '旅行游记', '学习分享', '活动记录'],
-      right: 10,
-      top: 0
-    },
-    grid: {
-      left: '3%',
-      right: '4%',
-      bottom: '3%',
-      containLabel: true
-    },
-    xAxis: {
-      type: 'category',
-      data: props.data.map(item => item.date),
-      axisLabel: {
-        rotate: props.type === 'day' ? 45 : 0
-      }
-    },
-    yAxis: {
-      type: 'value',
-      name: '内容数量'
-    },
-    series: [
-      {
-        name: '文化见闻',
-        type: 'bar',
-        stack: 'total',
-        emphasis: {
-          focus: 'series'
-        },
-        data: props.data.map(item => item.story || 0),
-        itemStyle: {
-          color: '#409EFF'
-        }
-      },
-      {
-        name: '旅行游记',
-        type: 'bar',
-        stack: 'total',
-        emphasis: {
-          focus: 'series'
-        },
-        data: props.data.map(item => item.travel || 0),
-        itemStyle: {
-          color: '#67C23A'
-        }
-      },
-      {
-        name: '学习分享',
-        type: 'bar',
-        stack: 'total',
-        emphasis: {
-          focus: 'series'
-        },
-        data: props.data.map(item => item.learning || 0),
-        itemStyle: {
-          color: '#E6A23C'
-        }
-      },
-      {
-        name: '活动记录',
-        type: 'bar',
-        stack: 'total',
-        emphasis: {
-          focus: 'series'
-        },
-        data: props.data.map(item => item.activity || 0),
-        itemStyle: {
-          color: '#F56C6C'
-        }
-      }
-    ]
-  }
-
-  chartInstance.setOption(option)
+const handleRefresh = () => {
+  ElMessage.success('图表数据已刷新')
+  loadChartData(timeRange.value)
 }
 
-// 响应式调整
-const handleResize = () => {
-  if (chartInstance) {
-    chartInstance.resize()
-  }
+const loadChartData = (range) => {
+  console.log('加载图表数据，范围:', range)
+  // 模拟数据加载
+  setTimeout(() => {
+    // 这里应该是实际的API调用
+    console.log('图表数据加载完成')
+  }, 500)
 }
 
-// 监听数据变化
-watch(() => props.data, () => {
-  updateChart()
-}, { deep: true })
-
-watch(() => props.type, () => {
-  updateChart()
-})
-
-// 生命周期
 onMounted(() => {
-  initChart()
-  window.addEventListener('resize', handleResize)
-})
-
-onUnmounted(() => {
-  if (chartInstance) {
-    chartInstance.dispose()
-    chartInstance = null
-  }
-  window.removeEventListener('resize', handleResize)
+  loadChartData(timeRange.value)
 })
 </script>
 
 <style scoped>
 .content-growth-chart {
-  width: 100%;
-  height: 300px;
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.chart-header h3 {
+  margin: 0;
+  color: #303133;
+}
+
+.chart-controls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .chart-container {
-  width: 100%;
-  height: 100%;
+  margin-bottom: 20px;
 }
 
-.chart-loading,
-.chart-empty {
-  width: 100%;
+.chart-placeholder {
   height: 300px;
+  background: #f8f9fa;
+  border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.placeholder-content {
+  text-align: center;
+  color: #909399;
+}
+
+.placeholder-content i {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.mock-chart {
+  margin-top: 20px;
+}
+
+.chart-bars {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-around;
+  height: 120px;
+  padding: 0 20px;
+}
+
+.chart-bar {
+  width: 20px;
+  background: linear-gradient(to top, #409EFF, #79BBFF);
+  border-radius: 2px 2px 0 0;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+
+.chart-bar:hover {
+  background: linear-gradient(to top, #337ecc, #409EFF);
+  transform: scale(1.1);
+}
+
+.chart-labels {
+  display: flex;
+  justify-content: space-around;
+  margin-top: 10px;
+  font-size: 0.8rem;
+  color: #606266;
+}
+
+.chart-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+
+.stat-item {
+  text-align: center;
+  padding: 15px;
+  background: #f5f7fa;
+  border-radius: 6px;
+}
+
+.stat-label {
+  display: block;
+  font-size: 0.9rem;
+  color: #909399;
+  margin-bottom: 5px;
+}
+
+.stat-value {
+  display: block;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #303133;
+  margin-bottom: 5px;
+}
+
+.stat-trend {
+  font-size: 0.8rem;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.stat-trend.up {
+  background: #f0f9ff;
+  color: #409EFF;
+}
+
+.stat-trend.down {
+  background: #fef0f0;
+  color: #F56C6C;
 }
 </style>

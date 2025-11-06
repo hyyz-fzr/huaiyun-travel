@@ -1,0 +1,78 @@
+# 专注修复缺失的样式文件
+Write-Host "🔧 创建缺失的样式文件..." -ForegroundColor Cyan
+
+# 创建styles目录
+$stylesDir = "src/styles"
+if (!(Test-Path $stylesDir)) {
+    New-Item -ItemType Directory -Path $stylesDir -Force
+    Write-Host "✅ 创建styles目录" -ForegroundColor Green
+}
+
+# 创建index.css全局样式文件
+$cssContent = @'
+/* 淮韵游踪 - 全局样式 */
+/* 基于淮南文化特色的色彩体系 */
+
+:root {
+  /* 主色调 - 淮南文化色彩 */
+  --color-bagong-mountain: #2E8B57;      /* 八公山绿 */
+  --color-huai-river: #1E90FF;           /* 淮水蓝 */
+  --color-doufu-white: #F8F8FF;          /* 豆腐白 */
+  --color-papercut-red: #DC143C;         /* 剪纸红 */
+  --color-ancient-gray: #708090;         /* 古城青灰 */
+}
+
+/* 全局重置 */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  height: 100%;
+  font-family: "PingFang SC", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #303133;
+  background-color: #f5f7fa;
+}
+
+#app {
+  min-height: 100vh;
+}
+
+/* 链接样式 */
+a {
+  color: var(--color-huai-river);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--color-bagong-mountain);
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+'@
+
+# 写入CSS文件
+[System.IO.File]::WriteAllText("$stylesDir/index.css", $cssContent, [System.Text.Encoding]::UTF8)
+Write-Host "✅ 创建index.css全局样式文件" -ForegroundColor Green

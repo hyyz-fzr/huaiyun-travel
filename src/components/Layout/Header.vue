@@ -62,7 +62,6 @@ const handleLogout = () => {
   top: 0;
   z-index: 1000;
 }
-
 .header-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -72,12 +71,10 @@ const handleLogout = () => {
   padding: 0 20px;
   height: 60px;
 }
-
 .logo-section {
   display: flex;
   align-items: center;
 }
-
 .logo {
   font-size: 1.5rem;
   font-weight: bold;
@@ -85,24 +82,20 @@ const handleLogout = () => {
   margin: 0;
   margin-right: 10px;
 }
-
 .slogan {
   color: #909399;
   font-size: 0.9rem;
 }
-
 .nav-section {
   flex: 1;
   display: flex;
   justify-content: center;
 }
-
 .user-section {
   display: flex;
   align-items: center;
   gap: 10px;
 }
-
 .user-info {
   display: flex;
   align-items: center;
@@ -112,7 +105,6 @@ const handleLogout = () => {
   border-radius: 4px;
   transition: background-color 0.3s;
 }
-
 .user-info:hover {
   background-color: #f5f7fa;
 }

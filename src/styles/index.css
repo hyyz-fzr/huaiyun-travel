@@ -1,0 +1,19 @@
+﻿/* 淮韵游踪全局样式 */
+:root {
+  --color-bagong-mountain: #2E8B57;
+  --color-huai-river: #1E90FF;
+  --color-doufu-white: #F8F8FF;
+  --color-papercut-red: #DC143C;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Microsoft YaHei", sans-serif;
+  background-color: #f5f7fa;
+}
+
+/* 工具类 */
+.text-center { text-align: center; }
+.mt-20 { margin-top: 20px; }
+.mb-20 { margin-bottom: 20px; }
