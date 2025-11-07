@@ -1,6 +1,7 @@
 ﻿<template>
   <div class="product-list">
     <div class="page-header">
+<<<<<<< HEAD
       <div class="header-content">
         <div>
           <h1>特色文创</h1>
@@ -122,11 +123,30 @@
           </el-button>
         </el-empty>
       </div>
+=======
+      <h1>文创产品</h1>
+      <p>购买精美的淮南文化创意产品</p >
+    </div>
+    
+    <div class="content-section">
+      <el-row :gutter="20">
+        <el-col :xs="12" :sm="8" :md="6" v-for="item in 8" :key="item">
+          <el-card class="product-card">
+            <template #header>
+              <h3>文创产品 {{ item }}</h3>
+            </template>
+            <p>精美的淮南文化创意产品</p >
+            <el-button type="primary">购买</el-button>
+          </el-card>
+        </el-col>
+      </el-row>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
     </div>
   </div>
 </template>
 
 <script setup>
+<<<<<<< HEAD
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useProductStore } from '@/stores/product'
@@ -195,16 +215,19 @@ const addToCart = (product) => {
 onMounted(() => {
   productStore.fetchProductList()
 })
+=======
+// 产品列表逻辑
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
 </script>
 
 <style scoped>
 .product-list {
+  padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 20px;
 }
-
 .page-header {
+<<<<<<< HEAD
   margin-bottom: 30px;
 }
 
@@ -375,25 +398,12 @@ onMounted(() => {
 
 .empty-state {
   padding: 80px 20px;
+=======
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   text-align: center;
+  margin-bottom: 40px;
 }
-
-@media (max-width: 768px) {
-  .header-content {
-    flex-direction: column;
-    gap: 16px;
-  }
-  
-  .filter-bar {
-    flex-direction: column;
-  }
-  
-  .products-grid {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  }
-  
-  .product-actions {
-    flex-direction: column;
-  }
+.product-card {
+  margin-bottom: 20px;
 }
 </style>

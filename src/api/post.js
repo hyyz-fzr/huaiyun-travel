@@ -1,64 +1,74 @@
+<<<<<<< HEAD
 ﻿import api from './index'
+=======
+﻿/**
+ * $(($FileName -replace '\.js$','')) - 淮南文化平台
+ * 文件编码已修复 - UTF-8
+ */
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
 
-// 帖子相关API
-export const postApi = {
-  // 获取帖子列表
-  getPosts(params) {
-    return api.get('/posts', {params})
+export const $(($FileName -replace '\.js$',''))API = {
+  // 获取数据
+  async getList(params = {}) {
+    return Promise.resolve({
+      data: [],
+      total: 0,
+      success: true
+    })
   },
 
-  // 获取帖子详情
-  getPostDetail(id) {
-    return api.get(`/posts/${id}`)
+  // 创建数据
+  async create(data) {
+    return Promise.resolve({
+      success: true,
+      id: Date.now(),
+      message: '创建成功'
+    })
   },
 
-  // 创建帖子
-  createPost(data) {
-    return api.post('/posts', data)
+  // 更新数据
+  async update(id, data) {
+    return Promise.resolve({
+      success: true,
+      message: '更新成功'
+    })
   },
 
-  // 更新帖子
-  updatePost(id, data) {
-    return api.put(`/posts/${id}`, data)
-  },
-
-  // 删除帖子
-  deletePost(id) {
-    return api.delete(`/posts/${id}`)
-  },
-
-  // 点赞帖子
-  likePost(id) {
-    return api.post(`/posts/${id}/like`)
-  },
-
-  // 取消点赞
-  unlikePost(id) {
-    return api.delete(`/posts/${id}/like`)
-  },
-
-  // 收藏帖子
-  collectPost(id) {
-    return api.post(`/posts/${id}/collect`)
-  },
-
-  // 取消收藏
-  uncollectPost(id) {
-    return api.delete(`/posts/${id}/collect`)
-  },
-
-  // 获取帖子评论
-  getPostComments(id, params) {
-    return api.get(`/posts/${id}/comments`, params)
-  },
-
-  // 添加评论
-  addComment(id, data) {
-    return api.post(`/posts/${id}/comments`, data)
-  },
-
-  // 删除评论
-  deleteComment(postId, commentId) {
-    return api.delete(`/posts/${postId}/comments/${commentId}`)
+  // 删除数据
+  async delete(id) {
+    return Promise.resolve({
+      success: true,
+      message: '删除成功'
+    })
   }
 }
+<<<<<<< HEAD
+=======
+
+export const $(($FileName -replace '\.js$',''))Utils = {
+  // 数据格式化
+  formatData(data) {
+    return data
+  },
+
+  // 验证数据
+  validate(data) {
+    return data !== null && data !== undefined
+  },
+
+  // 过滤数据
+  filter(list, condition) {
+    return list.filter(item => {
+      for (let key in condition) {
+        if (item[key] !== condition[key]) return false
+      }
+      return true
+    })
+  }
+}
+
+export default {
+  ...$(($FileName -replace '\.js$',''))API,
+  ...$(($FileName -replace '\.js$',''))Utils
+}
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2

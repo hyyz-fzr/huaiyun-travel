@@ -1,4 +1,5 @@
 ﻿<template>
+<<<<<<< HEAD
   <div class="order-confirm">
     <div class="container">
       <el-steps :active="currentStep" align-center class="order-steps">
@@ -288,165 +289,29 @@
         <el-button type="primary" @click="saveAddress">保存</el-button>
       </template>
     </el-dialog>
+=======
+  <div class="component">
+    <h3>$(($Name -replace '\.vue$',''))</h3>
+    <p>组件已修复 - 淮南文化数字传承平台</p >
+    <el-button type="primary" @click="handleClick">测试按钮</el-button>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { ChatDotRound, Money, Wallet } from '@element-plus/icons-vue'
 
-const router = useRouter()
-
-const currentStep = ref(1)
-const loading = ref(false)
-const showAddressDialog = ref(false)
-const showAddAddress = ref(false)
-const editingAddress = ref(null)
-const addressFormRef = ref()
-
-// 订单信息
-const orderInfo = reactive({
-  orderNumber: `ORD${Date.now()}`,
-  createTime: new Date().toLocaleString(),
-  totalAmount: 0,
-  shippingFee: 0,
-  discountAmount: 0,
-  actualAmount: 0,
-  totalQuantity: 0,
-  shippingMethod: 'express',
-  paymentMethod: 'wechat',
-  notes: ''
-})
-
-// 订单商品
-const orderItems = ref([
-  {
-    id: 1,
-    name: '淮南豆腐文化礼盒',
-    description: '精选淮南优质黄豆，传统工艺制作',
-    image: '/images/products/tofu-gift-1.jpg',
-    price: 168.00,
-    quantity: 1
-  },
-  {
-    id: 2,
-    name: '八公山风景明信片',
-    description: '精美八公山风景明信片套装',
-    image: '/images/products/postcard-1.jpg',
-    price: 25.00,
-    quantity: 2
-  }
-])
-
-// 地址数据
-const addresses = ref([
-  {
-    id: 1,
-    recipient: '张三',
-    phone: '13800138000',
-    province: '安徽省',
-    city: '淮南市',
-    district: '八公山区',
-    detail: '八公山街道123号',
-    isDefault: true
-  },
-  {
-    id: 2,
-    recipient: '李四',
-    phone: '13900139000',
-    province: '安徽省',
-    city: '淮南市',
-    district: '田家庵区',
-    detail: '人民路456号',
-    isDefault: false
-  }
-])
-
-const selectedAddress = ref(null)
-
-// 地址表单
-const addressForm = reactive({
-  recipient: '',
-  phone: '',
-  region: [],
-  detail: '',
-  isDefault: false
-})
-
-const addressRules = {
-  recipient: [
-    { required: true, message: '请输入收货人姓名', trigger: 'blur' }
-  ],
-  phone: [
-    { required: true, message: '请输入手机号码', trigger: 'blur' },
-    { pattern: /^1[3-9]\d{9}$/, message: '手机号码格式不正确', trigger: 'blur' }
-  ],
-  region: [
-    { required: true, message: '请选择所在地区', trigger: 'change' }
-  ],
-  detail: [
-    { required: true, message: '请输入详细地址', trigger: 'blur' }
-  ]
+const handleClick = () => {
+  ElMessage.success('组件功能正常')
 }
+</script>
 
-// 地区选项（简化版）
-const regionOptions = [
-  {
-    value: 'anhui',
-    label: '安徽省',
-    children: [
-      {
-        value: 'huainan',
-        label: '淮南市',
-        children: [
-          { value: 'bagong', label: '八公山区' },
-          { value: 'tianjiaan', label: '田家庵区' },
-          { value: 'datong', label: '大通区' },
-          { value: 'xiejiaji', label: '谢家集区' },
-          { value: 'panji', label: '潘集区' },
-          { value: 'fengtai', label: '凤台县' },
-          { value: 'shou', label: '寿县' }
-        ]
-      }
-    ]
-  }
-]
-
-onMounted(() => {
-  calculateOrderAmount()
-  // 默认选择默认地址
-  const defaultAddress = addresses.value.find(addr => addr.isDefault)
-  if (defaultAddress) {
-    selectedAddress.value = defaultAddress
-  }
-})
-
-// 计算订单金额
-const calculateOrderAmount = () => {
-  let totalAmount = 0
-  let totalQuantity = 0
-
-  orderItems.value.forEach(item => {
-    totalAmount += item.price * item.quantity
-    totalQuantity += item.quantity
-  })
-
-  // 计算运费（满100免运费）
-  const shippingFee = totalAmount >= 100 ? 0 : 10
-  // 计算优惠（示例：满150减10）
-  const discountAmount = totalAmount >= 150 ? 10 : 0
-  const actualAmount = totalAmount + shippingFee - discountAmount
-
-  Object.assign(orderInfo, {
-    totalAmount,
-    shippingFee,
-    discountAmount,
-    actualAmount,
-    totalQuantity
-  })
+<style scoped>
+.component {
+  padding: 20px;
+  text-align: center;
 }
+<<<<<<< HEAD
 
 // 选择地址
 const selectAddress = (address) => {
@@ -952,3 +817,6 @@ const deleteAddress = (id) => {
     ElMessage.success('地址删除成功')
   }
 }
+=======
+</style>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2

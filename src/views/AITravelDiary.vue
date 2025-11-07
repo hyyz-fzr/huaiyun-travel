@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <template>
   <div class="ai-travel-diary">
     <el-page-header @back="$router.back()" class="page-header">
@@ -272,10 +273,18 @@
         </div>
       </div>
     </el-dialog>
+=======
+﻿<template>
+  <div class="component">
+    <h3>$(($Name -replace '\.vue$',''))</h3>
+    <p>组件已修复 - 淮南文化数字传承平台</p >
+    <el-button type="primary" @click="handleClick">测试按钮</el-button>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   </div>
 </template>
 
 <script setup>
+<<<<<<< HEAD
 import { ref, reactive } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import {
@@ -616,14 +625,19 @@ const createNewDiary = () => {
     currentStep.value = 1
     ElMessage.success('创建成功，开始新的日记创作')
   })
+=======
+import { ElMessage } from 'element-plus'
+
+const handleClick = () => {
+  ElMessage.success('组件功能正常')
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
 }
 </script>
 
 <style scoped>
-.ai-travel-diary {
-  max-width: 1000px;
-  margin: 0 auto;
+.component {
   padding: 20px;
+<<<<<<< HEAD
 }
 
 .page-header {
@@ -743,179 +757,8 @@ const createNewDiary = () => {
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s;
+=======
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   text-align: center;
-}
-
-.mood-option:hover {
-  border-color: #409eff;
-  background: #f0f9ff;
-}
-
-.mood-option.active {
-  border-color: #409eff;
-  background: #f0f9ff;
-}
-
-.mood-emoji {
-  font-size: 2em;
-}
-
-.mood-text {
-  color: #606266;
-  font-size: 0.9em;
-  font-weight: 500;
-}
-
-/* 步骤操作 */
-.step-actions {
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-  margin-top: 32px;
-  padding-top: 24px;
-  border-top: 1px solid #f0f0f0;
-}
-
-/* 日记结果样式 */
-.diary-result {
-  min-height: 400px;
-}
-
-.diary-header {
-  text-align: center;
-  margin-bottom: 32px;
-  padding-bottom: 24px;
-  border-bottom: 2px solid #f0f0f0;
-}
-
-.diary-title {
-  margin: 0 0 16px 0;
-  color: #303133;
-  font-size: 2em;
-  font-weight: 600;
-}
-
-.diary-meta {
-  display: flex;
-  justify-content: center;
-  gap: 24px;
-  color: #909399;
-  font-size: 0.95em;
-}
-
-.diary-content {
-  line-height: 1.8;
-  color: #606266;
-}
-
-.diary-text {
-  margin-bottom: 32px;
-}
-
-.diary-text p {
-  margin-bottom: 1.5em;
-  text-indent: 2em;
-}
-
-.diary-images {
-  margin: 32px 0;
-}
-
-.carousel-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 8px;
-}
-
-.diary-footer {
-  text-align: center;
-  margin-top: 40px;
-  padding-top: 24px;
-  border-top: 1px solid #f0f0f0;
-}
-
-/* 结果操作 */
-.result-actions {
-  display: flex;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 32px;
-  flex-wrap: wrap;
-}
-
-/* 分享选项 */
-.share-options {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-
-.share-option {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  padding: 24px 16px;
-  border: 2px solid #f0f0f0;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.3s;
-  text-align: center;
-}
-
-.share-option:hover {
-  border-color: #409eff;
-  background: #f0f9ff;
-  transform: translateY(-2px);
-}
-
-.share-option .el-icon {
-  font-size: 2em;
-  color: #409eff;
-}
-
-.share-option span {
-  color: #303133;
-  font-weight: 500;
-}
-
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .ai-travel-diary {
-    padding: 16px;
-  }
-  
-  .mood-selector {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .diary-meta {
-    flex-direction: column;
-    gap: 8px;
-  }
-  
-  .step-actions,
-  .result-actions {
-    flex-direction: column;
-  }
-  
-  .share-options {
-    grid-template-columns: 1fr;
-  }
-}
-
-@media (max-width: 480px) {
-  .creation-steps :deep(.el-step) {
-    min-width: 80px;
-  }
-  
-  .creation-steps :deep(.el-step__title) {
-    font-size: 12px;
-  }
-  
-  .creation-steps :deep(.el-step__description) {
-    display: none;
-  }
 }
 </style>

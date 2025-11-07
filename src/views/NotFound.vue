@@ -1,4 +1,5 @@
 ﻿<template>
+<<<<<<< HEAD
   <div class="not-found">
     <div class="error-content">
       <div class="error-image">
@@ -28,39 +29,29 @@
         </div>
       </div>
     </div>
+=======
+  <div class="component">
+    <h3>$(($Name -replace '\.vue$',''))</h3>
+    <p>组件已修复 - 淮南文化数字传承平台</p >
+    <el-button type="primary" @click="handleClick">测试按钮</el-button>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   </div>
 </template>
 
 <script setup>
-import { ArrowLeft, HomeFilled } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+
+const handleClick = () => {
+  ElMessage.success('组件功能正常')
+}
 </script>
 
 <style scoped>
-.not-found {
-  min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+.component {
   padding: 20px;
-}
-
-.error-content {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 60px;
-  max-width: 1000px;
-  width: 100%;
-  background: white;
-  border-radius: 20px;
-  padding: 60px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-  align-items: center;
-}
-
-.error-image {
   text-align: center;
 }
+<<<<<<< HEAD
 
 .error-image img {
   max-width: 100%;
@@ -137,3 +128,6 @@ import { ArrowLeft, HomeFilled } from '@element-plus/icons-vue'
   }
 }
 </style>
+=======
+</style>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2

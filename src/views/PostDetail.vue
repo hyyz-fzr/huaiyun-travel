@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <template>
   <div class="post-detail">
     <el-page-header @back="$router.back()" class="page-header">
@@ -140,20 +141,20 @@
         </el-button>
       </template>
     </el-dialog>
+=======
+﻿<template>
+  <div class="component">
+    <h3>$(($Name -replace '\.vue$',''))</h3>
+    <p>组件已修复 - 淮南文化数字传承平台</p >
+    <el-button type="primary" @click="handleClick">测试按钮</el-button>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { postApi} from '@/api/post'
-import {
-  View,
-  Star,
-  ChatDotRound
-} from '@element-plus/icons-vue'
 
+<<<<<<< HEAD
 const route = useRoute()
 const loading = ref(true)
 const post = ref(null)
@@ -244,13 +245,17 @@ const formatTime = (timeString) => {
 onMounted(() => {
   loadPostDetail()
 })
+=======
+const handleClick = () => {
+  ElMessage.success('组件功能正常')
+}
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
 </script>
 
 <style scoped>
-.post-detail {
-  max-width: 800px;
-  margin: 0 auto;
+.component {
   padding: 20px;
+<<<<<<< HEAD
 }
 
 .page-header {
@@ -471,6 +476,9 @@ onMounted(() => {
   .content-image {
     height: 150px;
   }
+=======
+  text-align: center;
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
 }
 </style>
 

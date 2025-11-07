@@ -1,4 +1,5 @@
 ﻿<template>
+<<<<<<< HEAD
   <div class="product-upload">
     <div class="page-header">
       <h1>上传商品</h1>
@@ -95,138 +96,26 @@
         </el-form-item>
       </el-form>
     </el-card>
+=======
+  <div class="component">
+    <h3>$(($Name -replace '\.vue$',''))</h3>
+    <p>组件已修复 - 淮南文化数字传承平台</p >
+    <el-button type="primary" @click="handleClick">测试按钮</el-button>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   </div>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
-import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Plus } from '@element-plus/icons-vue'
-import { useProductStore } from '@/stores/product'
 
-const router = useRouter()
-const productStore = useProductStore()
-const formRef = ref()
-const loading = ref(false)
-
-const form = reactive({
-  name: '',
-  category: '',
-  description: '',
-  price: '',
-  originalPrice: '',
-  stock: '',
-  tags: '',
-  images: []
-})
-
-const fileList = ref([])
-
-const rules = {
-  name: [
-    { required: true, message: '请输入商品名称', trigger: 'blur' }
-  ],
-  category: [
-    { required: true, message: '请选择商品分类', trigger: 'change' }
-  ],
-  price: [
-    { required: true, message: '请输入价格', trigger: 'blur' },
-    { type: 'number', message: '价格必须为数字值', trigger: 'blur', transform: value => Number(value) }
-  ],
-  stock: [
-    { required: true, message: '请输入库存数量', trigger: 'blur' },
-    { type: 'number', message: '库存必须为数字值', trigger: 'blur', transform: value => Number(value) }
-  ]
-}
-
-const handleUploadSuccess = (response, file) => {
-  form.images.push(response.data)
-  ElMessage.success('图片上传成功')
-}
-
-const handleRemove = (file) => {
-  const index = form.images.findIndex(url => url === file.url)
-  if (index !== -1) {
-    form.images.splice(index, 1)
-  }
-}
-
-const beforeUpload = (file) => {
-  const isJPG = file.type === 'image/jpeg' || file.type === 'image/png'
-  const isLt5M = file.size / 1024 / 1024 < 5
-
-  if (!isJPG) {
-    ElMessage.error('上传图片只能是 JPG/PNG 格式!')
-    return false
-  }
-  if (!isLt5M) {
-    ElMessage.error('上传图片大小不能超过 5MB!')
-    return false
-  }
-  return true
-}
-
-const submitForm = async () => {
-  if (!formRef.value) return
-  
-  try {
-    const valid = await formRef.value.validate()
-    if (!valid) return
-
-    loading.value = true
-    const productData = {
-      ...form,
-      price: Number(form.price),
-      originalPrice: form.originalPrice ? Number(form.originalPrice) : null,
-      stock: Number(form.stock)
-    }
-
-    const success = await productStore.createProduct(productData)
-    
-    if (success) {
-      ElMessage.success('商品上传成功！')
-      router.push('/products')
-    }
-  } catch (error) {
-    console.error('提交失败:', error)
-    ElMessage.error('提交失败，请稍后重试')
-  } finally {
-    loading.value = false
-  }
-}
-
-const resetForm = () => {
-  formRef.value?.resetFields()
-  fileList.value = []
-  form.images = []
-  form.originalPrice = ''
-  form.tags = ''
+const handleClick = () => {
+  ElMessage.success('组件功能正常')
 }
 </script>
 
 <style scoped>
-.product-upload {
-  max-width: 800px;
-  margin: 0 auto;
+.component {
   padding: 20px;
-}
-
-.page-header {
   text-align: center;
-  margin-bottom: 30px;
-}
-
-.page-header h1 {
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.page-header p {
-  color: #666;
-}
-
-.upload-form {
-  padding: 30px;
 }
 </style>

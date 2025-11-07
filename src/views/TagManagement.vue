@@ -1,659 +1,332 @@
 ﻿<template>
   <div class="tag-management">
-    <!-- 页面标题 -->
     <div class="page-header">
       <h1>标签管理</h1>
-      <p>管理系统内容标签，支持分类筛选和热门标签管理</p >
+      <p>管理内容标签和分类</p >
     </div>
 
-    <!-- 操作工具栏 -->
-    <div class="action-toolbar">
-      <el-row :gutter="20" justify="space-between" align="middle">
-        <el-col :span="12">
-          <el-space>
-            <el-button type="primary" @click="handleCreateTag">
-              <el-icon><Plus /></el-icon>
-              新建标签
-            </el-button>
-            <el-button type="success" @click="handleBatchEnable" :disabled="selectedTags.length === 0">
-              <el-icon><Check /></el-icon>
-              批量启用
-            </el-button>
-            <el-button type="warning" @click="handleBatchDisable" :disabled="selectedTags.length === 0">
-              <el-icon><Close /></el-icon>
-              批量禁用
-            </el-button>
-            <el-button type="danger" @click="handleBatchDelete" :disabled="selectedTags.length === 0">
-              <el-icon><Delete /></el-icon>
-              批量删除
-            </el-button>
-          </el-space>
-        </el-col>
-        <el-col :span="12" class="text-right">
-          <el-space>
-            <el-input
-              v-model="searchKeyword"
-              placeholder="搜索标签名称..."
-              clearable
-              style="width: 200px;"
-              @clear="handleSearch"
-              @keyup.enter="handleSearch"
-            >
-              <template #prefix>
-                <el-icon><Search /></el-icon>
-              </template>
-            </el-input>
-            <el-button type="primary" @click="handleSearch">
-              搜索
-            </el-button>
-            <el-button @click="handleReset">
-              重置
-            </el-button>
-          </el-space>
-        </el-col>
-      </el-row>
-    </div>
-
-    <!-- 标签分类筛选 -->
-    <div class="category-filter">
-      <el-radio-group v-model="filterCategory" @change="handleCategoryChange">
-        <el-radio-button label="">全部标签</el-radio-button>
-        <el-radio-button label="culture">文化主题</el-radio-button>
-        <el-radio-button label="location">地域标签</el-radio-button>
-        <el-radio-button label="activity">活动类型</el-radio-button>
-        <el-radio-button label="heritage">非遗分类</el-radio-button>
-        <el-radio-button label="custom">自定义标签</el-radio-button>
-      </el-radio-group>
-    </div>
-
-    <!-- 标签统计 -->
-    <div class="tag-stats">
-      <el-row :gutter="20">
-        <el-col :span="6">
-          <el-statistic title="总标签数" :value="tagStats.total" />
-        </el-col>
-        <el-col :span="6">
-          <el-statistic title="启用标签" :value="tagStats.enabled" />
-        </el-col>
-        <el-col :span="6">
-          <el-statistic title="热门标签" :value="tagStats.hot" />
-        </el-col>
-        <el-col :span="6">
-          <el-statistic title="今日新增" :value="tagStats.todayNew" />
-        </el-col>
-      </el-row>
-    </div>
-
-    <!-- 标签表格 -->
-    <div class="table-section">
-      <el-table
-        :data="tagList"
-        v-loading="loading"
-        style="width: 100%"
-        @selection-change="handleSelectionChange"
-        :default-sort="{ prop: 'usageCount', order: 'descending' }"
+    <div class="management-toolbar">
+      <el-button type="primary" @click="handleCreateTag">
+        <i class="el-icon-plus"></i>
+        新建标签
+      </el-button>
+      
+      <el-input
+        v-model="searchKeyword"
+        placeholder="搜索标签..."
+        style="width: 300px"
+        clearable
       >
-        <el-table-column type="selection" width="55" />
-        
-        <el-table-column label="标签名称" min-width="150">
-          <template #default="{ row }">
-            <div class="tag-name-cell">
-              <el-tag
-                :type="getTagType(row.category)"
-                :effect="row.isHot ? 'dark' : 'light'"
-                :closable="false"
-              >
-                {{ row.name }}
-              </el-tag>
-              <el-icon v-if="row.isHot" color="#F56C6C" class="hot-icon">
-                <Fire />
-              </el-icon>
-            </div>
-          </template>
-        </el-table-column>
+        <template #append>
+          <el-button @click="handleSearch">
+            <i class="el-icon-search"></i>
+          </el-button>
+        </template>
+      </el-input>
 
-        <el-table-column prop="category" label="分类" width="120">
-          <template #default="{ row }">
-            <el-tag :type="getCategoryTagType(row.category)" size="small">
-              {{ getCategoryText(row.category) }}
-            </el-tag>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="usageCount" label="使用次数" width="100" sortable>
-          <template #default="{ row }">
-            <span :class="{ 'hot-count': row.usageCount > 100 }">
-              {{ row.usageCount }}
-            </span>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="contentCount" label="关联内容" width="100" sortable>
-          <template #default="{ row }">
-            {{ row.contentCount }}
-          </template>
-        </el-table-column>
-
-        <el-table-column label="状态" width="100">
-          <template #default="{ row }">
-            <el-tag :type="row.status === 'enabled' ? 'success' : 'danger'" size="small">
-              {{ row.status === 'enabled' ? '启用' : '禁用' }}
-            </el-tag>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="creator" label="创建者" width="120">
-          <template #default="{ row }">
-            <div class="creator-info">
-              <el-avatar
-                :size="24"
-                :src="row.creatorAvatar || '/images/avatars/default.jpg'"
-              />
-              <span style="margin-left: 8px;">{{ row.creatorName }}</span>
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="createTime" label="创建时间" width="180" sortable>
-          <template #default="{ row }">
-            {{ formatDate(row.createTime) }}
-          </template>
-        </el-table-column>
-
-        <el-table-column prop="updateTime" label="更新时间" width="180" sortable>
-          <template #default="{ row }">
-            {{ formatDate(row.updateTime) }}
-          </template>
-        </el-table-column>
-
-        <el-table-column label="操作" width="200" fixed="right">
-          <template #default="{ row }">
-            <el-button
-              size="small"
-              type="primary"
-              link
-              @click="handleEdit(row)"
-            >
-              编辑
-            </el-button>
-            
-            <el-button
-              v-if="row.status === 'enabled'"
-              size="small"
-              type="warning"
-              link
-              @click="handleDisable(row.id)"
-            >
-              禁用
-            </el-button>
-            
-            <el-button
-              v-if="row.status === 'disabled'"
-              size="small"
-              type="success"
-              link
-              @click="handleEnable(row.id)"
-            >
-              启用
-            </el-button>
-
-            <el-button
-              v-if="!row.isHot && row.usageCount > 50"
-              size="small"
-              type="info"
-              link
-              @click="handleSetHot(row.id, true)"
-            >
-              设热门
-            </el-button>
-
-            <el-button
-              v-if="row.isHot"
-              size="small"
-              type="info"
-              link
-              @click="handleSetHot(row.id, false)"
-            >
-              取消热门
-            </el-button>
-            
-            <el-button
-              size="small"
-              type="danger"
-              link
-              @click="handleDelete(row.id)"
-            >
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+      <el-select v-model="filterStatus" placeholder="全部状态" clearable>
+        <el-option label="启用" value="active"></el-option>
+        <el-option label="禁用" value="inactive"></el-option>
+      </el-select>
     </div>
 
-    <!-- 分页 -->
-    <div class="pagination-section">
+    <el-table :data="filteredTags" style="width: 100%">
+      <el-table-column prop="id" label="ID" width="80"></el-table-column>
+      <el-table-column prop="name" label="标签名称" width="150">
+        <template #default="scope">
+          <el-tag :type="getTagType(scope.row.type)" effect="light">
+            {{ scope.row.name }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="type" label="标签类型" width="120"></el-table-column>
+      <el-table-column prop="description" label="描述"></el-table-column>
+      <el-table-column prop="usageCount" label="使用次数" width="100" sortable>
+        <template #default="scope">
+          <span class="usage-count">{{ scope.row.usageCount }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="status" label="状态" width="100">
+        <template #default="scope">
+          <el-switch
+            v-model="scope.row.status"
+            :active-value="'active'"
+            :inactive-value="'inactive'"
+            @change="handleStatusChange(scope.row)"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column prop="createdAt" label="创建时间" width="180"></el-table-column>
+      <el-table-column label="操作" width="200" fixed="right">
+        <template #default="scope">
+          <el-button size="small" @click="handleEdit(scope.row)">编辑</el-button>
+          <el-button size="small" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <div class="pagination-container">
       <el-pagination
-        v-model:current-page="pagination.current"
-        v-model:page-size="pagination.size"
+        :current-page="pagination.current"
+        :page-size="pagination.size"
         :total="pagination.total"
-        :page-sizes="[10, 20, 50, 100]"
         layout="total, sizes, prev, pager, next, jumper"
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
       />
     </div>
 
-    <!-- 创建/编辑标签对话框 -->
-    <el-dialog
-      v-model="tagDialogVisible"
-      :title="isEditMode ? '编辑标签' : '新建标签'"
+    <!-- 新建/编辑标签对话框 -->
+    <el-dialog 
+      :title="dialogTitle" 
+      v-model="dialogVisible"
       width="500px"
-      :before-close="handleDialogClose"
     >
-      <TagForm
-        :tag-data="currentTag"
-        :is-edit="isEditMode"
-        @submit="handleTagSubmit"
-        @cancel="handleDialogClose"
-      />
+      <el-form :model="tagForm" :rules="formRules" ref="tagFormRef" label-width="80px">
+        <el-form-item label="标签名称" prop="name">
+          <el-input v-model="tagForm.name" placeholder="请输入标签名称" />
+        </el-form-item>
+        
+        <el-form-item label="标签类型" prop="type">
+          <el-select v-model="tagForm.type" placeholder="请选择标签类型">
+            <el-option label="内容标签" value="content"></el-option>
+            <el-option label="分类标签" value="category"></el-option>
+            <el-option label="专题标签" value="topic"></el-option>
+            <el-option label="地域标签" value="region"></el-option>
+          </el-select>
+        </el-form-item>
+        
+        <el-form-item label="标签描述" prop="description">
+          <el-input 
+            v-model="tagForm.description" 
+            type="textarea" 
+            :rows="3"
+            placeholder="请输入标签描述"
+          />
+        </el-form-item>
+        
+        <el-form-item label="标签颜色" prop="color">
+          <el-color-picker v-model="tagForm.color" />
+        </el-form-item>
+        
+        <el-form-item label="状态" prop="status">
+          <el-radio-group v-model="tagForm.status">
+            <el-radio label="active">启用</el-radio>
+            <el-radio label="inactive">禁用</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      
+      <template #footer>
+        <el-button @click="dialogVisible = false">取消</el-button>
+        <el-button type="primary" @click="handleDialogConfirm">确认</el-button>
+      </template>
     </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from 'vue'
+import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Plus, Check, Close, Delete, Search, HotWater } from '@element-plus/icons-vue'
-import TagForm from '@/components/common/TagForm.vue'
-import { contentStore } from '@/stores/content'
 
-// Store
-const store = useContentStore()
-
-// 响应式数据
 const searchKeyword = ref('')
-const filterCategory = ref('')
-const loading = ref(false)
-const tagDialogVisible = ref(false)
-const isEditMode = ref(false)
-const selectedTags = ref([])
-const currentTag = ref(null)
+const filterStatus = ref('')
+const dialogVisible = ref(false)
+const dialogTitle = ref('新建标签')
+const tagFormRef = ref()
 
-const tagList = ref([])
+const tags = ref([
+  {
+    id: 1,
+    name: '八公山',
+    type: '地域标签',
+    description: '与八公山相关的文化内容',
+    usageCount: 156,
+    status: 'active',
+    color: '#409EFF',
+    createdAt: '2024-01-01 10:00:00'
+  },
+  {
+    id: 2,
+    name: '豆腐文化',
+    type: '内容标签',
+    description: '淮南豆腐制作工艺和文化',
+    usageCount: 89,
+    status: 'active',
+    color: '#67C23A',
+    createdAt: '2024-01-02 14:30:00'
+  },
+  {
+    id: 3,
+    name: '传统剪纸',
+    type: '内容标签',
+    description: '传统剪纸艺术相关内容',
+    usageCount: 67,
+    status: 'inactive',
+    color: '#E6A23C',
+    createdAt: '2024-01-03 09:15:00'
+  }
+])
 
 const pagination = reactive({
   current: 1,
   size: 10,
-  total: 0
+  total: 3
 })
 
-// 标签统计
-const tagStats = reactive({
-  total: 0,
-  enabled: 0,
-  hot: 0,
-  todayNew: 0
+const tagForm = reactive({
+  id: null,
+  name: '',
+  type: '',
+  description: '',
+  color: '#409EFF',
+  status: 'active'
 })
 
-// 方法
-const loadTagList = async () => {
-  loading.value = true
-  try {
-    const params = {
-      page: pagination.current,
-      size: pagination.size,
-      keyword: searchKeyword.value,
-      category: filterCategory.value
-    }
+const formRules = {
+  name: [
+    { required: true, message: '请输入标签名称', trigger: 'blur' },
+    { min: 2, max: 20, message: '标签名称长度在 2 到 20 个字符', trigger: 'blur' }
+  ],
+  type: [
+    { required: true, message: '请选择标签类型', trigger: 'change' }
+  ]
+}
+
+const filteredTags = computed(() => {
+  return tags.value.filter(tag => {
+    const matchesSearch = !searchKeyword.value || 
+      tag.name.includes(searchKeyword.value) || 
+      tag.description.includes(searchKeyword.value)
+    const matchesStatus = !filterStatus.value || tag.status === filterStatus.value
     
-    await store.fetchTagList(params)
-    tagList.value = store.tagList
-    pagination.total = store.tagTotalCount
-    // 更新统计信息
-    updateTagStats()
-  } catch (error) {
-    ElMessage.error('加载标签列表失败：' + error.message)
-  } finally {
-    loading.value = false
+    return matchesSearch && matchesStatus
+  })
+})
+
+const getTagType = (type) => {
+  const typeMap = {
+    '内容标签': 'primary',
+    '分类标签': 'success',
+    '专题标签': 'warning',
+    '地域标签': 'info'
+  }
+  return typeMap[type] || 'info'
+}
+
+const handleCreateTag = () => {
+  dialogTitle.value = '新建标签'
+  Object.assign(tagForm, {
+    id: null,
+    name: '',
+    type: '',
+    description: '',
+    color: '#409EFF',
+    status: 'active'
+  })
+  dialogVisible.value = true
+}
+
+const handleEdit = (tag) => {
+  dialogTitle.value = '编辑标签'
+  Object.assign(tagForm, { ...tag })
+  dialogVisible.value = true
+}
+
+const handleDelete = async (tag) => {
+  try {
+    await ElMessageBox.confirm(`确定删除标签"${tag.name}"吗？`, '提示', {
+      type: 'warning'
+    })
+    
+    const index = tags.value.findIndex(t => t.id === tag.id)
+    if (index > -1) {
+      tags.value.splice(index, 1)
+      ElMessage.success('标签删除成功')
+    }
+  } catch {
+    // 用户取消删除
   }
 }
 
-const updateTagStats = () => {
-  const tags = store.tagList
-  tagStats.total = store.tagTotalCount
-  tagStats.enabled = tags.filter(tag => tag.status === 'enabled').length
-  tagStats.hot = tags.filter(tag => tag.isHot).length
-  tagStats.todayNew = tags.filter(tag => {
-    const today = new Date().toDateString()
-    const createDate = new Date(tag.createTime).toDateString()
-    return createDate === today
-  }).length
+const handleStatusChange = (tag) => {
+  const action = tag.status === 'active' ? '启用' : '禁用'
+  ElMessage.success(`标签"${tag.name}"已${action}`)
 }
 
 const handleSearch = () => {
-  pagination.current = 1
-  loadTagList()
-}
-
-const handleReset = () => {
-  searchKeyword.value = ''
-  filterCategory.value = ''
-  pagination.current = 1
-  loadTagList()
-}
-
-const handleCategoryChange = () => {
-  pagination.current = 1
-  loadTagList()
+  ElMessage.info(`搜索标签: ${searchKeyword.value}`)
 }
 
 const handleSizeChange = (size) => {
   pagination.size = size
-  pagination.current = 1
-  loadTagList()
 }
 
-const handleCurrentChange = (current) => {
-  pagination.current = current
-  loadTagList()
+const handleCurrentChange = (page) => {
+  pagination.current = page
 }
 
-const handleSelectionChange = (selection) => {
-  selectedTags.value = selection
-}
-
-const handleCreateTag = () => {
-  isEditMode.value = false
-  currentTag.value = null
-  tagDialogVisible.value = true
-}
-
-const handleEdit = (tag) => {
-  isEditMode.value = true
-  currentTag.value = { ...tag }
-  tagDialogVisible.value = true
-}
-
-const handleEnable = async (id) => {
+const handleDialogConfirm = async () => {
   try {
-    await store.enableTag(id)
-    ElMessage.success('标签已启用')
-    loadTagList()
-  } catch (error) {
-    ElMessage.error('启用失败：' + error.message)
-  }
-}
-
-const handleDisable = async (id) => {
-  try {
-    await ElMessageBox.confirm('确定要禁用该标签吗？禁用后相关内容将不再显示此标签', '禁用提示', {
-      type: 'warning'
-    })
+    await tagFormRef.value.validate()
     
-    await store.disableTag(id)
-    ElMessage.success('标签已禁用')
-    loadTagList()
-  } catch (error) {
-    if (error !== 'cancel') {
-      ElMessage.error('禁用失败：' + error.message)
-    }
-  }
-}
-
-const handleSetHot = async (id, isHot) => {
-  try {
-    await store.setTagHot(id, isHot)
-    ElMessage.success(isHot ? '标签已设为热门' : '标签已取消热门')
-    loadTagList()
-  } catch (error) {
-    ElMessage.error('操作失败：' + error.message)
-  }
-}
-
-const handleDelete = async (id) => {
-  try {
-    await ElMessageBox.confirm('确定要删除该标签吗？此操作不可恢复！', '删除提示', {
-      type: 'error',
-      confirmButtonText: '确定删除',
-      cancelButtonText: '取消'
-    })
-    
-    await store.deleteTag(id)
-    ElMessage.success('删除成功')
-    loadTagList()
-  } catch (error) {
-    if (error !== 'cancel') {
-      ElMessage.error('删除失败：' + error.message)
-    }
-  }
-}
-
-const handleTagSubmit = async (formData) => {
-  try {
-    if (isEditMode.value) {
-      await store.updateTag(currentTag.value.id, formData)
-      ElMessage.success('标签更新成功')
+    if (tagForm.id) {
+      // 编辑现有标签
+      const index = tags.value.findIndex(t => t.id === tagForm.id)
+      if (index > -1) {
+        tags.value[index] = { ...tagForm }
+        ElMessage.success('标签更新成功')
+      }
     } else {
-      await store.createTag(formData)
+      // 新建标签
+      const newTag = {
+        ...tagForm,
+        id: Date.now(),
+        usageCount: 0,
+        createdAt: new Date().toLocaleString('zh-CN')
+      }
+      tags.value.push(newTag)
       ElMessage.success('标签创建成功')
     }
     
-    tagDialogVisible.value = false
-    loadTagList()
+    dialogVisible.value = false
   } catch (error) {
-    ElMessage.error('操作失败：' + error.message)
+    ElMessage.error('请完善表单信息')
   }
 }
 
-const handleDialogClose = () => {
-  tagDialogVisible.value = false
-  currentTag.value = null
-}
-
-// 批量操作
-const handleBatchEnable = async () => {
-  try {
-    await ElMessageBox.confirm(`确定要启用 ${selectedTags.value.length} 个标签吗？`, '批量启用', {
-      type: 'warning'
-    })
-    
-    const ids = selectedTags.value.map(item => item.id)
-    await store.batchEnableTags(ids)
-    ElMessage.success(`已启用 ${ids.length} 个标签`)
-    selectedTags.value = []
-    loadTagList()
-  } catch (error) {
-    if (error !== 'cancel') {
-      ElMessage.error('批量操作失败：' + error.message)
-    }
-  }
-}
-
-const handleBatchDisable = async () => {
-  try {
-    await ElMessageBox.confirm(`确定要禁用 ${selectedTags.value.length} 个标签吗？`, '批量禁用', {
-      type: 'warning'
-    })
-    
-    const ids = selectedTags.value.map(item => item.id)
-    await store.batchDisableTags(ids)
-    ElMessage.success(`已禁用 ${ids.length} 个标签`)
-    selectedTags.value = []
-    loadTagList()
-  } catch (error) {
-    if (error !== 'cancel') {
-      ElMessage.error('批量操作失败：' + error.message)
-    }
-  }
-}
-
-const handleBatchDelete = async () => {
-  try {
-    await ElMessageBox.confirm(`确定要删除 ${selectedTags.value.length} 个标签吗？此操作不可恢复！`, '批量删除', {
-      type: 'error',
-      confirmButtonText: '确定删除',
-      cancelButtonText: '取消'
-    })
-    
-    const ids = selectedTags.value.map(item => item.id)
-    await store.batchDeleteTags(ids)
-    ElMessage.success(`已删除 ${ids.length} 个标签`)
-    selectedTags.value = []
-    loadTagList()
-  } catch (error) {
-    if (error !== 'cancel') {
-      ElMessage.error('批量操作失败：' + error.message)
-    }
-  }
-}
-
-// 工具函数
-const getTagType = (category) => {
-  const typeMap = {
-    culture: 'primary',
-    location: 'success',
-    activity: 'warning',
-    heritage: 'danger',
-    custom: 'info'
-  }
-  return typeMap[category] || 'info'
-}
-
-const getCategoryTagType = (category) => {
-  const typeMap = {
-    culture: 'primary',
-    location: 'success',
-    activity: 'warning',
-    heritage: 'danger',
-    custom: 'info'
-  }
-  return typeMap[category] || 'info'
-}
-
-const getCategoryText = (category) => {
-  const categoryMap = {
-    culture: '文化主题',
-    location: '地域标签',
-    activity: '活动类型',
-    heritage: '非遗分类',
-    custom: '自定义标签'
-  }
-  return categoryMap[category] || '未知分类'
-}
-
-const formatDate = (dateString) => {
-  if (!dateString) return ''
-  return new Date(dateString).toLocaleString('zh-CN')
-}
-
-// 生命周期
 onMounted(() => {
-  loadTagList()
+  console.log('标签管理页面加载完成')
 })
 </script>
 
 <style scoped>
 .tag-management {
   padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .page-header {
-  margin-bottom: 24px;
-  border-bottom: 1px solid #f0f0f0;
-  padding-bottom: 16px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
-.page-header h1 {
-  margin: 0;
-  color: #303133;
-  font-size: 24px;
-}
-
-.page-header p {
-  margin: 8px 0 0;
-  color: #909399;
-  font-size: 14px;
-}
-
-.action-toolbar {
-  margin-bottom: 20px;
-  padding: 16px;
-  background: #f8f9fa;
-  border-radius: 6px;
-}
-
-.text-right {
-  text-align: right;
-}
-
-.category-filter {
-  margin-bottom: 20px;
-  padding: 16px;
-  background: #f0f9ff;
-  border-radius: 6px;
-  border: 1px solid #e1f5fe;
-}
-
-.tag-stats {
-  margin-bottom: 20px;
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: 8px;
-  color: white;
-}
-
-:deep(.tag-stats .el-statistic__content) {
-  color: white;
-  font-size: 28px;
-}
-
-:deep(.tag-stats .el-statistic__title) {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 14px;
-  margin-bottom: 8px;
-}
-
-.table-section {
-  margin-bottom: 20px;
-}
-
-.pagination-section {
+.management-toolbar {
   display: flex;
-  justify-content: flex-end;
-}
-
-.tag-name-cell {
-  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
   align-items: center;
-  gap: 8px;
 }
 
-.hot-icon {
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.2);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.hot-count {
-  color: #f56c6c;
+.usage-count {
   font-weight: bold;
+  color: #409EFF;
 }
 
-.creator-info {
+.pagination-container {
+  margin-top: 20px;
   display: flex;
-  align-items: center;
+  justify-content: center;
 }
 </style>

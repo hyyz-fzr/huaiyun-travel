@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿import { createApp } from "vue"
 import { createPinia } from "pinia"
 import App from "./App.vue"
@@ -32,3 +33,15 @@ function checkPermission(permission) {
 }
 
 console.log("🎯 淮韵游踪 - 开始挂载应用...")
+=======
+﻿import { createApp } from 'vue'
+import App from './App.vue'
+import router from './router'
+import ElementPlus from 'element-plus'
+import 'element-plus/dist/index.css'
+
+const app = createApp(App)
+app.use(router)
+app.use(ElementPlus)
+app.mount('#app')
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2

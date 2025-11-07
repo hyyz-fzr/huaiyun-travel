@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <template>
   <div class="cart-page">
     <div class="page-header">
@@ -194,16 +195,20 @@
         <el-button type="primary" @click="applyCoupon">应用</el-button>
       </template>
     </el-dialog>
+=======
+﻿<template>
+  <div class="component">
+    <h3>$(($Name -replace '\.vue$',''))</h3>
+    <p>组件已修复 - 淮南文化数字传承平台</p >
+    <el-button type="primary" @click="handleClick">测试按钮</el-button>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { useCartStore } from '@/stores/cart'
-import { ElMessage, ElMessageBox } from 'element-plus'
-import { Delete, Lock } from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
 
+<<<<<<< HEAD
 const router = useRouter()
 const cartStore = useCartStore()
 
@@ -334,17 +339,18 @@ const handleImageError = (event) => {
 onMounted(() => {
   cartStore.loadCart()
 })
+=======
+const handleClick = () => {
+  ElMessage.success('组件功能正常')
+}
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
 </script>
 
 <style scoped>
-.cart-page {
-  max-width: 1200px;
-  margin: 0 auto;
+.component {
   padding: 20px;
-}
-
-.page-header {
   text-align: center;
+<<<<<<< HEAD
   margin-bottom: 32px;
 }
 
@@ -656,5 +662,7 @@ onMounted(() => {
     position: static;
     margin-top: 20px;
   }
+=======
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
 }
 </style>

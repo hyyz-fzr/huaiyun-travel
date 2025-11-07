@@ -1,4 +1,5 @@
 ﻿<template>
+<<<<<<< HEAD
   <div class="register-page">
     <div class="register-container">
       <div class="register-card">
@@ -116,69 +117,42 @@
             立即登录
           </el-button>
         </div>
+=======
+  <div class="register-container">
+    <div class="register-form">
+      <div class="form-header">
+        <h2>加入淮韵游踪</h2>
+        <p>开启您的文化探索之旅</p >
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
       </div>
 
-      <div class="register-banner">
-        <div class="banner-content">
-          <h3>为什么加入我们？</h3>
-          <div class="benefits-list">
-            <div class="benefit-item">
-              <el-icon><Collection /></el-icon>
-              <div class="benefit-content">
-                <h4>探索文化遗产</h4>
-                <p>深入了解淮南丰富的非物质文化遗产</p >
-              </div>
-            </div>
-            <div class="benefit-item">
-              <el-icon><ShoppingCart /></el-icon>
-              <div class="benefit-content">
-                <h4>购买文创产品</h4>
-                <p>发现独具特色的淮南文化创意产品</p >
-              </div>
-            </div>
-            <div class="benefit-item">
-              <el-icon><ChatDotRound /></el-icon>
-              <div class="benefit-content">
-                <h4>加入文化社区</h4>
-                <p>与文化爱好者交流分享学习心得</p >
-              </div>
-            </div>
-            <div class="benefit-item">
-              <el-icon><Calendar /></el-icon>
-              <div class="benefit-content">
-                <h4>参与文化活动</h4>
-                <p>报名参加丰富多彩的文化体验活动</p >
-              </div>
-            </div>
-          </div>
-        </div>
-        <!-- 这里可以放置一张淮南文化特色的背景图 -->
-        <div class="banner-image"></div>
+      <el-form>
+        <el-form-item>
+          <el-input placeholder="请输入用户名" />
+        </el-form-item>
+        <el-form-item>
+          <el-input placeholder="请输入邮箱" />
+        </el-form-item>
+        <el-form-item>
+          <el-input type="password" placeholder="请输入密码" show-password />
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" style="width: 100%">注册</el-button>
+        </el-form-item>
+      </el-form>
+
+      <div class="form-footer">
+        <span>已有账号？</span>
+        <el-button type="primary" link @click="$router.push('/login')">立即登录</el-button>
       </div>
     </div>
-
-    <!-- 用户协议对话框 -->
-    <el-dialog v-model="showAgreement" title="用户协议" width="70%">
-      <user-agreement />
-    </el-dialog>
-
-    <!-- 隐私政策对话框 -->
-    <el-dialog v-model="showPrivacy" title="隐私政策" width="70%">
-      <privacy-policy />
-    </el-dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive } from 'vue'
 import { useRouter } from 'vue-router'
-import { useUserStore } from '@/stores/user'
-import UserAgreement from '@/components/UserAgreement.vue'
-import PrivacyPolicy from '@/components/PrivacyPolicy.vue'
-import { User, Message, Iphone, Lock, Collection, ShoppingCart, ChatDotRound, Calendar } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
-
 const router = useRouter()
+<<<<<<< HEAD
 const userStore = useUserStore()
 
 const registerFormRef = ref()
@@ -315,163 +289,32 @@ const showUserAgreement = () => {
 const showPrivacyPolicy = () => {
   showPrivacy.value = true
 }
+=======
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
 </script>
 
 <style scoped>
-.register-page {
+.register-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
 }
-
-.register-container {
-  display: grid;
-  grid-template-columns: 450px 500px;
-  background: #fff;
-  border-radius: 20px;
-  overflow: hidden;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.register-card {
-  padding: 50px 40px;
-}
-
-.register-header {
-  text-align: center;
-  margin-bottom: 40px;
-}
-
-.register-header h2 {
-  margin: 0 0 12px 0;
-  color: #303133;
-  font-size: 2rem;
-  font-weight: bold;
-}
-
-.register-header p {
-  margin: 0;
-  color: #909399;
-  font-size: 1rem;
-}
-
 .register-form {
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 400px;
+}
+.form-header {
+  text-align: center;
   margin-bottom: 30px;
 }
-
-:deep(.register-form .el-input__wrapper) {
-  border-radius: 12px;
-}
-
-:deep(.register-form .el-input__inner) {
-  padding: 12px 16px;
-}
-
-:deep(.register-form .el-checkbox) {
-  align-items: flex-start;
-}
-
-:deep(.register-form .el-checkbox__label) {
-  white-space: normal;
-  line-height: 1.4;
-}
-
-.register-button {
-  width: 100%;
-  border-radius: 12px;
-  height: 48px;
-  font-size: 1rem;
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-.register-footer {
+.form-footer {
   text-align: center;
-  color: #606266;
-  font-size: 0.9rem;
-}
-
-.register-banner {
-  position: relative;
-  background: linear-gradient(135deg, #E6A23C 0%, #F56C6C 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  overflow: hidden;
-}
-
-.banner-content {
-  position: relative;
-  z-index: 2;
-  padding: 40px;
-}
-
-.banner-content h3 {
-  font-size: 1.8rem;
-  margin: 0 0 30px 0;
-  font-weight: bold;
-  text-align: center;
-}
-
-.benefits-list {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.benefit-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-}
-
-.benefit-item .el-icon {
-  font-size: 1.5rem;
-  margin-top: 4px;
-  flex-shrink: 0;
-}
-
-.benefit-content h4 {
-  margin: 0 0 8px 0;
-  font-size: 1.1rem;
-  font-weight: bold;
-}
-
-.benefit-content p {
-  margin: 0;
-  opacity: 0.9;
-  line-height: 1.4;
-  font-size: 0.9rem;
-}
-
-.banner-image {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(230, 162, 60, 0.8) 0%, rgba(245, 108, 108, 0.8) 100%);
-  opacity: 0.3;
-}
-
-@media (max-width: 768px) {
-  .register-container {
-    grid-template-columns: 1fr;
-    max-width: 450px;
-  }
-  
-  .register-banner {
-    display: none;
-  }
-  
-  .register-card {
-    padding: 40px 24px;
-  }
+  margin-top: 20px;
+  color: #909399;
 }
 </style>

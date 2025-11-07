@@ -1,4 +1,5 @@
 ﻿<template>
+<<<<<<< HEAD
   <div class="event-list">
     <div class="page-header">
       <div class="header-content">
@@ -110,237 +111,29 @@
         </el-empty>
       </div>
     </div>
+=======
+  <div class="component">
+    <h3>$(($Name -replace '\.vue$',''))</h3>
+    <p>组件已修复 - 淮南文化数字传承平台</p >
+    <el-button type="primary" @click="handleClick">测试按钮</el-button>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { useEventStore } from '@/stores/event'
 import { ElMessage } from 'element-plus'
-import { Plus, Search, Picture, Clock, Location, User } from '@element-plus/icons-vue'
 
-const router = useRouter()
-const eventStore = useEventStore()
-
-const searchKeyword = ref('')
-const filterType = ref('')
-
-const filteredEvents = computed(() => {
-  let filtered = eventStore.eventList
-
-  if (searchKeyword.value) {
-    const keyword = searchKeyword.value.toLowerCase()
-    filtered = filtered.filter(event => 
-      event.title.toLowerCase().includes(keyword) || 
-      event.description.toLowerCase().includes(keyword) ||
-      event.location.toLowerCase().includes(keyword)
-    )
-  }
-
-  return filtered
-})
-
-const getEventStatus = (event) => {
-  const now = new Date()
-  const eventTime = new Date(event.eventTime)
-  
-  if (eventTime > now) return 'upcoming'
-  if (eventTime <= now && eventTime.getTime() + 2 * 60 * 60 * 1000 > now.getTime()) return 'ongoing'
-  return 'ended'
+const handleClick = () => {
+  ElMessage.success('组件功能正常')
 }
-
-const formatTime = (time) => {
-  return new Date(time).toLocaleString('zh-CN')
-}
-
-const viewEventDetail = (id) => {
-  router.push(`/event/${id}`)
-}
-
-const bookEvent = (event) => {
-  if (event.bookedCount >= event.quota) {
-    ElMessage.warning('活动名额已满')
-    return
-  }
-  
-  ElMessage.success('报名成功！')
-  event.bookedCount++
-}
-
-onMounted(() => {
-  eventStore.fetchEventList()
-})
 </script>
 
 <style scoped>
-.event-list {
-  max-width: 1200px;
-  margin: 0 auto;
+.component {
   padding: 20px;
-}
-
-.page-header {
-  margin-bottom: 30px;
-}
-
-.header-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-}
-
-.header-content h1 {
-  color: #333;
-  margin-bottom: 8px;
-}
-
-.header-content p {
-  color: #666;
-  margin: 0;
-}
-
-.filter-bar {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-  padding: 20px;
-  background: white;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-}
-
-.event-content {
-  min-height: 500px;
-}
-
-.loading-state {
-  padding: 40px;
-}
-
-.events-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
-}
-
-.event-card {
-  transition: all 0.3s;
-  overflow: hidden;
-}
-
-.event-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.event-image {
-  position: relative;
-  height: 200px;
-  overflow: hidden;
-  background: #f5f7fa;
-  cursor: pointer;
-}
-
-.event-image img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s;
-}
-
-.event-card:hover .event-image img {
-  transform: scale(1.05);
-}
-
-.no-image {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  color: #909399;
-}
-
-.no-image .el-icon {
-  font-size: 48px;
-  margin-bottom: 8px;
-}
-
-.event-status {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-}
-
-.event-info {
-  padding: 20px;
-}
-
-.event-title {
-  margin: 0 0 8px 0;
-  color: #303133;
-  cursor: pointer;
-  transition: color 0.3s;
-}
-
-.event-title:hover {
-  color: #409eff;
-}
-
-.event-desc {
-  color: #606266;
-  line-height: 1.5;
-  margin-bottom: 16px;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.event-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 16px;
-}
-
-.meta-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  color: #909399;
-  font-size: 14px;
-}
-
-.event-price {
-  margin-bottom: 16px;
-}
-
-.price {
-  font-size: 1.2em;
-  color: #e6a23c;
-  font-weight: bold;
-}
-
-.free {
-  color: #67c23a;
-  font-weight: 500;
-}
-
-.event-actions {
-  display: flex;
-  gap: 8px;
-}
-
-.event-actions .el-button {
-  flex: 1;
-}
-
-.empty-state {
-  padding: 80px 20px;
   text-align: center;
 }
+<<<<<<< HEAD
 
 @media (max-width: 768px) {
   .header-content {
@@ -357,3 +150,6 @@ onMounted(() => {
   }
 }
 </style>
+=======
+</style>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2

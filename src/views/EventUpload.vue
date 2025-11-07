@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <template>
   <div class="event-upload">
     <el-page-header @back="$router.back()" class="page-header">
@@ -199,15 +200,20 @@
         </el-form-item>
       </el-form>
     </el-card>
+=======
+﻿<template>
+  <div class="component">
+    <h3>$(($Name -replace '\.vue$',''))</h3>
+    <p>组件已修复 - 淮南文化数字传承平台</p >
+    <el-button type="primary" @click="handleClick">测试按钮</el-button>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Plus, Delete } from '@element-plus/icons-vue'
 
+<<<<<<< HEAD
 const router = useRouter()
 const formRef = ref()
 const submitting = ref(false)
@@ -341,55 +347,18 @@ const submitForm = async () => {
 const saveDraft = () => {
   localStorage.setItem('event_draft', JSON.stringify(form.value))
   ElMessage.success('草稿保存成功')
+=======
+const handleClick = () => {
+  ElMessage.success('组件功能正常')
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
 }
 </script>
 
 <style scoped>
-.event-upload {
-  max-width: 800px;
-  margin: 0 auto;
+.component {
   padding: 20px;
-}
-
-.page-header {
-  margin-bottom: 20px;
-}
-
-.upload-card {
-  padding: 24px;
-}
-
-/* 封面图片上传 */
-.cover-uploader {
-  :deep(.el-upload) {
-    border: 1px dashed #d9d9d9;
-    border-radius: 6px;
-    cursor: pointer;
-    position: relative;
-    overflow: hidden;
-    transition: var(--el-transition-duration-fast);
-    width: 200px;
-    height: 100px;
-  }
-  
-  :deep(.el-upload:hover) {
-    border-color: var(--el-color-primary);
-  }
-}
-
-.cover-image {
-  width: 200px;
-  height: 100px;
-  display: block;
-  object-fit: cover;
-}
-
-.cover-uploader-icon {
-  font-size: 28px;
-  color: #8c939d;
-  width: 200px;
-  height: 100px;
   text-align: center;
+<<<<<<< HEAD
   line-height: 100px;
 }
 
@@ -442,5 +411,7 @@ const saveDraft = () => {
     flex-direction: column;
     align-items: stretch;
   }
+=======
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
 }
 </style>

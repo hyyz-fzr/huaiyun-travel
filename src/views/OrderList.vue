@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <template>
   <div class="order-list">
     <div class="page-header">
@@ -130,14 +131,20 @@
         />
       </div>
     </div>
+=======
+﻿<template>
+  <div class="$(($FileName -replace '\.vue$','').ToLower())">
+    <h3>$(($FileName -replace '\.vue$',''))</h3>
+    <p>淮南文化数字传承平台 - 组件已修复</p >
+    <el-button type="primary" @click="handleTest">测试功能</el-button>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
-import { useRouter } from 'vue-router'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus'
 
+<<<<<<< HEAD
 const router = useRouter()
 const loading = ref(false)
 const activeStatus = ref('')
@@ -298,17 +305,18 @@ const handleImageError = (event) => {
 onMounted(() => {
   loadOrders()
 })
+=======
+const handleTest = () => {
+  ElMessage.success('$(($FileName -replace '\.vue$','')) 组件工作正常')
+}
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
 </script>
 
 <style scoped>
-.order-list {
-  max-width: 1000px;
-  margin: 0 auto;
+.$(($FileName -replace '\.vue$','').ToLower()) {
   padding: 20px;
-}
-
-.page-header {
   text-align: center;
+<<<<<<< HEAD
   margin-bottom: 32px;
 }
 
@@ -493,6 +501,11 @@ onMounted(() => {
     flex-wrap: wrap;
     gap: 8px;
   }
+=======
+  border: 1px solid #e4e7ed;
+  border-radius: 8px;
+  margin: 10px;
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
 }
 </style>
 

@@ -1,4 +1,5 @@
 ﻿<template>
+<<<<<<< HEAD
   <div class="content-dashboard">
     <!-- 页面标题 -->
     <div class="page-header">
@@ -246,228 +247,26 @@
         导出数据报表
       </el-button>
     </div>
+=======
+  <div class="component">
+    <h3>$(($Name -replace '\.vue$',''))</h3>
+    <p>组件已修复 - 淮南文化数字传承平台</p >
+    <el-button type="primary" @click="handleClick">测试按钮</el-button>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
-import { Download } from '@element-plus/icons-vue'
 
-// 组件导入
-import MetricCard from '@/components/common/MetricCard.vue'
-import ContentGrowthChart from '@/components/charts/ContentGrowthChart.vue'
-import ContentTypeChart from '@/components/charts/ContentTypeChart.vue'
-import UserActivityChart from '@/components/charts/UserActivityChart.vue'
-import HotTagsChart from '@/components/charts/HotTagsChart.vue'
-import LatestContents from '@/components/common/LatestContents.vue'
-import LatestComments from '@/components/common/LatestComments.vue'
-
-import { contentStore } from '@/stores/content'
-
-const router = useRouter()
-const store = contentStore()
-
-// 响应式数据
-const timeRange = ref('week')
-const customDateRange = ref([])
-const growthChartType = ref('day')
-const loading = ref(false)
-
-// 指标数据
-const metrics = reactive({
-  totalContents: 0,
-  totalUsers: 0,
-  totalComments: 0,
-  totalViews: 0,
-  activeUsers: 0,
-  interactionRate: 0,
-  avgDuration: 0,
-  completionRate: 0,
-  contentTrend: 0,
-  userTrend: 0,
-  commentTrend: 0,
-  viewTrend: 0,
-  activeUserTrend: 0,
-  interactionTrend: 0,
-  durationTrend: 0,
-  completionTrend: 0
-})
-
-// 图表数据
-const chartData = reactive({
-  growth: [],
-  typeDistribution: [],
-  userActivity: [],
-  hotTags: []
-})
-
-// 实时数据
-const realtimeData = reactive({
-  latestContents: [],
-  latestComments: []
-})
-
-// 定时器
-let refreshTimer = null
-
-// 方法
-const loadDashboardData = async () => {
-  loading.value = true
-  try {
-    const params = {
-      timeRange: timeRange.value,
-      startDate: customDateRange.value[0]?.toISOString().split('T')[0],
-      endDate: customDateRange.value[1]?.toISOString().split('T')[0]
-    }
-
-    await store.fetchDashboardData(params)
-    
-    // 更新指标数据
-    Object.assign(metrics, store.dashboardMetrics)
-    
-    // 更新图表数据
-    Object.assign(chartData, store.dashboardCharts)
-    
-    // 更新实时数据
-    Object.assign(realtimeData, store.dashboardRealtime)
-    
-  } catch (error) {
-    ElMessage.error('加载看板数据失败：' + error.message)
-  } finally {
-    loading.value = false
-  }
+const handleClick = () => {
+  ElMessage.success('组件功能正常')
 }
-
-const handleTimeRangeChange = () => {
-  if (timeRange.value !== 'custom') {
-    customDateRange.value = []
-  }
-  loadDashboardData()
-}
-
-const handleCustomDateChange = () => {
-  if (customDateRange.value && customDateRange.value.length === 2) {
-    loadDashboardData()
-  }
-}
-
-const handleViewAllContents = () => {
-  router.push('/content-management')
-}
-
-const handleViewAllComments = () => {
-  router.push('/comment-management')
-}
-
-const handleExportData = async () => {
-  try {
-    loading.value = true
-    await store.exportDashboardData({
-      timeRange: timeRange.value,
-      startDate: customDateRange.value[0]?.toISOString().split('T')[0],
-      endDate: customDateRange.value[1]?.toISOString().split('T')[0]
-    })
-    ElMessage.success('数据导出成功')
-  } catch (error) {
-    ElMessage.error('导出失败：' + error.message)
-  } finally {
-    loading.value = false
-  }
-}
-
-const startAutoRefresh = () => {
-  // 每5分钟自动刷新一次
-  refreshTimer = setInterval(() => {
-    loadDashboardData()
-  }, 5 * 60 * 1000)
-}
-
-const stopAutoRefresh = () => {
-  if (refreshTimer) {
-    clearInterval(refreshTimer)
-    refreshTimer = null
-  }
-}
-
-// 生命周期
-onMounted(() => {
-  loadDashboardData()
-  startAutoRefresh()
-})
-
-onUnmounted(() => {
-  stopAutoRefresh()
-})
 </script>
 
 <style scoped>
-.content-dashboard {
+.component {
   padding: 20px;
-  background: #f5f7fa;
-  min-height: 100vh;
-}
-
-.page-header {
-  margin-bottom: 24px;
-}
-
-.page-header h1 {
-  margin: 0;
-  color: #303133;
-  font-size: 24px;
-}
-
-.page-header p {
-  margin: 8px 0 0;
-  color: #909399;
-  font-size: 14px;
-}
-
-.time-filter {
-  margin-bottom: 24px;
-  padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-}
-
-.metrics-cards {
-  margin-bottom: 20px;
-}
-
-.charts-section {
-  margin-bottom: 20px;
-}
-
-.chart-card {
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-}
-
-.chart-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 500;
-  color: #303133;
-}
-
-.realtime-section {
-  margin-bottom: 20px;
-}
-
-.realtime-card {
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
-}
-
-.export-section {
   text-align: center;
-  padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 </style>

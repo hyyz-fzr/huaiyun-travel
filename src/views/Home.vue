@@ -1,8 +1,12 @@
+<<<<<<< HEAD
 ﻿# 修复Home.vue中的图片路径和语法错误
 $projectPath = "D:\Users\Administrator\Downloads\huaiyun-travel"
 
 $fixedHomeContent = @'
 <template>
+=======
+﻿<template>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   <div class="home-container">
     <!-- 页面头部 -->
     <div class="home-header">
@@ -33,13 +37,7 @@ $fixedHomeContent = @'
     <div class="feature-nav">
       <h2 class="section-title">文化探索</h2>
       <el-row :gutter="20">
-        <el-col 
-          :xs="12" 
-          :sm="8" 
-          :md="6" 
-          v-for="feature in features" 
-          :key="feature.id"
-        >
+        <el-col :xs="12" :sm="8" :md="6" v-for="feature in features" :key="feature.id">
           <div class="feature-card" @click="navigateTo(feature.path)">
             <div class="feature-icon" :style="{ backgroundColor: feature.bgColor }">
               <i :class="feature.icon"></i>
@@ -52,41 +50,12 @@ $fixedHomeContent = @'
         </el-col>
       </el-row>
     </div>
-
-    <!-- 最新内容 -->
-    <div class="latest-content">
-      <h2 class="section-title">最新动态</h2>
-      <el-row :gutter="20">
-        <el-col :xs="24" :sm="12" :md="8" v-for="item in latestItems" :key="item.id">
-          <el-card class="content-card" shadow="hover">
-            <div class="content-image">
-              <img :src="item.image" :alt="item.title" />
-            </div>
-            <div class="content-info">
-              <h3>{{ item.title }}</h3>
-              <p class="content-desc">{{ item.description }}</p >
-              <div class="content-meta">
-                <span class="meta-item">
-                  <i class="el-icon-time"></i>
-                  {{ item.time }}
-                </span>
-                <span class="meta-item">
-                  <i class="el-icon-view"></i>
-                  {{ item.views }}
-                </span>
-              </div>
-            </div>
-          </el-card>
-        </el-col>
-      </el-row>
-    </div>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
 
 // 导入本地图片
 import bagongshanImg from '@/assets/images/heritage/bagong-mountain.jpg'
@@ -134,7 +103,7 @@ const features = ref([
     icon: 'el-icon-collection',
     title: '文化遗产',
     description: '探索淮南丰富的历史文化遗产',
-    path: '/heritage',
+    path: '/heritage/list',
     bgColor: '#409EFF'
   },
   {
@@ -142,7 +111,7 @@ const features = ref([
     icon: 'el-icon-goods',
     title: '文创产品',
     description: '购买精美的淮南文化创意产品',
-    path: '/products',
+    path: '/products/list',
     bgColor: '#67C23A'
   },
   {
@@ -150,7 +119,7 @@ const features = ref([
     icon: 'el-icon-chat-dot-round',
     title: '文化社区',
     description: '分享交流淮南文化见闻',
-    path: '/community',
+    path: '/posts/list',
     bgColor: '#E6A23C'
   },
   {
@@ -158,8 +127,9 @@ const features = ref([
     icon: 'el-icon-video-camera',
     title: 'VR体验',
     description: '沉浸式体验淮南文化场景',
-    path: '/vr-experience',
+    path: '/vr-view',
     bgColor: '#F56C6C'
+<<<<<<< HEAD
   }
 ])
 
@@ -188,6 +158,8 @@ const latestItems = ref([
     image: papercutImg,
     time: '1天前',
     views: '189'
+=======
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   }
 ])
 
@@ -195,11 +167,6 @@ const latestItems = ref([
 const navigateTo = (path) => {
   router.push(path)
 }
-
-// 页面加载完成
-onMounted(() => {
-  console.log('🏠 首页加载完成')
-})
 </script>
 
 <style scoped>
@@ -233,6 +200,7 @@ onMounted(() => {
   margin-bottom: 40px;
 }
 
+<<<<<<< HEAD
 .stat-card {
   border-radius: 8px;
   border: none;
@@ -265,6 +233,8 @@ onMounted(() => {
   margin-top: 5px;
 }
 
+=======
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
 .feature-nav {
   margin-bottom: 40px;
 }
@@ -304,6 +274,7 @@ onMounted(() => {
   color: white;
   font-size: 1.5rem;
 }
+<<<<<<< HEAD
 
 .feature-info h3 {
   font-size: 1.1rem;
@@ -407,3 +378,6 @@ Write-Host "✅ Home.vue 已修复" -ForegroundColor Green
 Write-Host "   - 修复了img标签语法错误" -ForegroundColor White  
 Write-Host "   - 改用import方式引用图片" -ForegroundColor White
 Write-Host "   - 使用实际存在的图片文件" -ForegroundColor White
+=======
+</style>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2

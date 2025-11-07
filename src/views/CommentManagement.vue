@@ -1,11 +1,11 @@
 ﻿<template>
   <div class="comment-management">
-    <!-- 页面标题 -->
     <div class="page-header">
       <h1>评论管理</h1>
-      <p>管理用户对内容的评论和回复</p >
+      <p>管理用户评论和回复</p >
     </div>
 
+<<<<<<< HEAD
     <!-- 筛选和搜索区域 -->
     <div class="filter-section">
       <el-row :gutter="20">
@@ -88,71 +88,24 @@
         v-loading="loading"
         style="width: 100%"
         @selection-change="handleSelectionChange"
+=======
+    <div class="toolbar">
+      <el-input
+        v-model="searchKeyword"
+        placeholder="搜索评论内容"
+        style="width: 300px"
+        clearable
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
       >
-        <el-table-column label="评论内容" min-width="300">
-          <template #default="{ row }">
-            <div class="comment-content">
-              <div class="comment-text">{{ row.content }}</div>
-              <div class="comment-meta">
-                <span class="author">作者: {{ row.authorName }}</span>
-                <span class="time">{{ formatDate(row.createTime) }}</span>
-              </div>
-            </div>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="状态" width="100">
-          <template #default="{ row }">
-            <el-tag :type="getStatusTagType(row.status)" size="small">
-              {{ getStatusText(row.status) }}
-            </el-tag>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="操作" width="200" fixed="right">
-          <template #default="{ row }">
-            <el-button
-              size="small"
-              type="primary"
-              link
-              @click="handleViewDetail(row)"
-            >
-              详情
-            </el-button>
-            
-            <el-button
-              v-if="row.status === 'pending'"
-              size="small"
-              type="success"
-              link
-              @click="handleApprove(row.id)"
-            >
-              通过
-            </el-button>
-            
-            <el-button
-              v-if="row.status === 'published'"
-              size="small"
-              type="warning"
-              link
-              @click="handleHide(row.id)"
-            >
-              隐藏
-            </el-button>
-            
-            <el-button
-              size="small"
-              type="danger"
-              link
-              @click="handleDelete(row.id)"
-            >
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
+        <template #append>
+          <el-button @click="handleSearch">
+            <i class="el-icon-search"></i>
+          </el-button>
+        </template>
+      </el-input>
     </div>
 
+<<<<<<< HEAD
     <!-- 分页 -->
     <div class="pagination-section">
       <el-pagination
@@ -167,207 +120,107 @@
         @current-change="handleCurrentChange"
       />
     </div>
+=======
+    <el-table :data="filteredComments" style="width: 100%">
+      <el-table-column prop="id" label="ID" width="80"></el-table-column>
+      <el-table-column prop="content" label="评论内容" min-width="200"></el-table-column>
+      <el-table-column prop="author" label="评论者" width="120"></el-table-column>
+      <el-table-column prop="target" label="评论对象" width="150"></el-table-column>
+      <el-table-column prop="status" label="状态" width="100">
+        <template #default="scope">
+          <el-tag :type="scope.row.status === 'approved' ? 'success' : 'warning'">
+            {{ scope.row.status === 'approved' ? '已审核' : '待审核' }}
+          </el-tag>
+        </template>
+      </el-table-column>
+      <el-table-column prop="createdAt" label="评论时间" width="180"></el-table-column>
+      <el-table-column label="操作" width="200">
+        <template #default="scope">
+          <el-button size="small" @click="handleApprove(scope.row)">审核通过</el-button>
+          <el-button size="small" type="danger" @click="handleDelete(scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from 'vue'
+import { ref, computed, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { Search, Refresh } from '@element-plus/icons-vue'
 
-// 响应式数据
+const comments = ref([
+  {
+    id: 1,
+    content: '这篇文章很有深度，让我对八公山文化有了新的认识！',
+    author: '文化爱好者',
+    target: '八公山历史文化探秘',
+    status: 'approved',
+    createdAt: '2024-01-15 14:30:00'
+  },
+  {
+    id: 2,
+    content: '豆腐制作工艺的传承很重要，希望更多人了解。',
+    author: '美食达人',
+    target: '豆腐制作工艺传承',
+    status: 'pending',
+    createdAt: '2024-01-15 10:20:00'
+  }
+])
+
 const searchKeyword = ref('')
-const filterStatus = ref('')
-const filterContentType = ref('')
-const dateRange = ref('')
-const loading = ref(false)
-const selectedComments = ref([])
 
-const commentList = ref([])
-
-const pagination = reactive({
-  current: 1,
-  size: 10,
-  total: 0
+const filteredComments = computed(() => {
+  if (!searchKeyword.value) return comments.value
+  return comments.value.filter(comment => 
+    comment.content.includes(searchKeyword.value) ||
+    comment.author.includes(searchKeyword.value) ||
+    comment.target.includes(searchKeyword.value)
+  )
 })
 
-// 方法
-const loadCommentList = async () => {
-  loading.value = true
-  try {
-    // 模拟数据
-    await new Promise(resolve => setTimeout(resolve, 1000))
-    commentList.value = [
-      {
-        id: 1,
-        content: '这个文化遗产真的很棒！',
-        authorName: '用户1',
-        createTime: new Date(),
-        status: 'published'
-      },
-      {
-        id: 2, 
-        content: '期待更多这样的内容',
-        authorName: '用户2',
-        createTime: new Date(Date.now() - 86400000),
-        status: 'pending'
-      }
-    ]
-    pagination.total = commentList.value.length
-  } catch (error) {
-    ElMessage.error('加载评论列表失败')
-  } finally {
-    loading.value = false
-  }
-}
-
 const handleSearch = () => {
-  pagination.current = 1
-  loadCommentList()
+  ElMessage.info(`搜索关键词: ${searchKeyword.value}`)
 }
 
-const handleReset = () => {
-  searchKeyword.value = ''
-  filterStatus.value = ''
-  filterContentType.value = ''
-  dateRange.value = ''
-  pagination.current = 1
-  loadCommentList()
+const handleApprove = (comment) => {
+  comment.status = 'approved'
+  ElMessage.success('评论已审核通过')
 }
 
-const handleSizeChange = (size) => {
-  pagination.size = size
-  pagination.current = 1
-  loadCommentList()
-}
-
-const handleCurrentChange = (current) => {
-  pagination.current = current
-  loadCommentList()
-}
-
-const handleSelectionChange = (selection) => {
-  selectedComments.value = selection
-}
-
-const handleViewDetail = (comment) => {
-  ElMessage.info(`查看评论详情: ${comment.id}`)
-}
-
-const handleApprove = async (id) => {
+const handleDelete = async (comment) => {
   try {
-    ElMessage.success('评论已通过审核')
-    loadCommentList()
-  } catch (error) {
-    ElMessage.error('操作失败')
-  }
-}
-
-const handleHide = async (id) => {
-  try {
-    await ElMessageBox.confirm('确定要隐藏该评论吗？', '隐藏提示', { type: 'warning' })
-    ElMessage.success('评论已隐藏')
-    loadCommentList()
-  } catch (error) {
-    if (error !== 'cancel') {
-      ElMessage.error('操作失败')
+    await ElMessageBox.confirm(`确定删除这条评论吗？`, '提示', {
+      type: 'warning'
+    })
+    const index = comments.value.findIndex(c => c.id === comment.id)
+    if (index > -1) {
+      comments.value.splice(index, 1)
+      ElMessage.success('评论删除成功')
     }
+  } catch {
+    // 用户取消删除
   }
 }
 
-const handleDelete = async (id) => {
-  try {
-    await ElMessageBox.confirm('确定要删除该评论吗？', '删除提示', { type: 'error' })
-    ElMessage.success('删除成功')
-    loadCommentList()
-  } catch (error) {
-    if (error !== 'cancel') {
-      ElMessage.error('删除失败')
-    }
-  }
-}
-
-// 工具函数
-const getStatusTagType = (status) => {
-  const statusMap = { published: 'success', pending: 'warning', hidden: 'info', banned: 'danger' }
-  return statusMap[status] || 'info'
-}
-
-const getStatusText = (status) => {
-  const statusMap = { published: '正常', pending: '待审核', hidden: '已隐藏', banned: '违规' }
-  return statusMap[status] || '未知状态'
-}
-
-const formatDate = (dateString) => {
-  if (!dateString) return ''
-  return new Date(dateString).toLocaleString('zh-CN')
-}
-
-// 生命周期
 onMounted(() => {
-  loadCommentList()
+  console.log('评论管理页面加载完成')
 })
 </script>
 
 <style scoped>
 .comment-management {
   padding: 20px;
-  background: #fff;
-  border-radius: 8px;
-  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
 .page-header {
-  margin-bottom: 24px;
-  border-bottom: 1px solid #f0f0f0;
-  padding-bottom: 16px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
-.page-header h1 {
-  margin: 0;
-  color: #303133;
-  font-size: 24px;
-}
-
-.page-header p {
-  margin: 8px 0 0;
-  color: #909399;
-  font-size: 14px;
-}
-
-.filter-section {
+.toolbar {
   margin-bottom: 20px;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 6px;
-}
-
-.table-section {
-  margin-bottom: 20px;
-}
-
-.pagination-section {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.comment-content {
-  line-height: 1.5;
-}
-
-.comment-text {
-  margin-bottom: 8px;
-  word-break: break-word;
-}
-
-.comment-meta {
-  display: flex;
-  gap: 16px;
-  font-size: 12px;
-  color: #909399;
-}
-
-.author {
-  font-weight: 500;
 }
 </style>

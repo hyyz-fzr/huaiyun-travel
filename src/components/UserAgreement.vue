@@ -1,4 +1,5 @@
 ﻿<template>
+<<<<<<< HEAD
   <div class="user-agreement">
     <el-card class="agreement-card">
       <template #header>
@@ -192,335 +193,29 @@
         </div>
       </template>
     </el-card>
+=======
+  <div class="$(($FileName -replace '\.vue$','').ToLower())">
+    <h3>$(($FileName -replace '\.vue$',''))</h3>
+    <p>淮南文化数字传承平台 - 组件已修复</p >
+    <el-button type="primary" @click="handleTest">测试功能</el-button>
+>>>>>>> 3ec69d9ec8f60413a7ca669a07e7561dc69f7af2
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue'
 import { ElMessage } from 'element-plus'
 
-const props = defineProps({
-  // 是否显示同意按钮
-  showAgreeButton: {
-    type: Boolean,
-    default: true
-  },
-  // 是否显示关闭按钮
-  showCloseButton: {
-    type: Boolean,
-    default: true
-  },
-  // 是否自动滚动到最新更新内容
-  autoScroll: {
-    type: Boolean,
-    default: false
-  }
-})
-
-const emit = defineEmits(['agree', 'close'])
-
-const activeNav = ref('preface')
-const agreementContent = ref(null)
-
-// 导航项配置
-const navItems = ref([
-  { id: 'preface', title: '前言' },
-  { id: 'acceptance', title: '协议接受' },
-  { id: 'registration', title: '用户注册' },
-  { id: 'account-security', title: '账号安全' },
-  { id: 'user-conduct', title: '行为规范' },
-  { id: 'content-guidelines', title: '内容规范' },
-  { id: 'intellectual-property', title: '知识产权' },
-  { id: 'privacy', title: '隐私保护' },
-  { id: 'disclaimer', title: '免责声明' },
-  { id: 'service-changes', title: '服务变更' },
-  { id: 'governance', title: '法律适用' },
-  { id: 'miscellaneous', title: '其他规定' },
-  { id: 'contact', title: '联系我们' }
-])
-
-onMounted(() => {
-  // 设置滚动监听
-  if (agreementContent.value) {
-    agreementContent.value.addEventListener('scroll', handleScroll)
-  }
-
-  // 如果需要自动滚动到最新内容
-  if (props.autoScroll) {
-    nextTick(() => {
-      scrollToSection('miscellaneous')
-    })
-  }
-})
-// 处理滚动，更新激活的导航项
-const handleScroll = () => {
-  if (!agreementContent.value) return
-
-  const sections = agreementContent.value.querySelectorAll('.agreement-section')
-  const scrollTop = agreementContent.value.scrollTop
-  
-  sections.forEach(section => {
-    const sectionTop = section.offsetTop - 100
-    const sectionBottom = sectionTop + section.offsetHeight
-    
-    if (scrollTop >= sectionTop && scrollTop < sectionBottom) {
-      activeNav.value = section.id
-    }
-  })
+const handleTest = () => {
+  ElMessage.success('$(($FileName -replace '\.vue$','')) 组件工作正常')
 }
-
-// 滚动到指定章节
-const scrollToSection = (sectionId) => {
-  const section = document.getElementById(sectionId)
-  if (section && agreementContent.value) {
-    agreementContent.value.scrollTo({
-      top: section.offsetTop - 80,
-      behavior: 'smooth'
-    })
-    activeNav.value = sectionId
-  }
-}
-
-// 处理同意协议
-const handleAgree = () => {
-  ElMessage.success('您已同意用户协议')
-  emit('agree')
-}
-
-// 处理关闭
-const handleClose = () => {
-  emit('close')
-}
-
-// 暴露方法给父组件
-defineExpose({
-  scrollToSection
-})
 </script>
 
-<style scoped lang="scss">
-.user-agreement {
+<style scoped>
+.$(($FileName -replace '\.vue$','').ToLower()) {
   padding: 20px;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.agreement-card {
-  min-height: 600px;
-  
-  :deep(.el-card__header) {
-    padding: 24px;
-    border-bottom: 1px solid #e6e8eb;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    
-    .agreement-header {
-      text-align: center;
-      color: white;
-      
-      h2 {
-        margin: 0 0 8px 0;
-        font-size: 1.8em;
-        font-weight: 600;
-      }
-      
-      .update-time {
-        margin: 0;
-        opacity: 0.9;
-        font-size: 0.9em;
-      }
-    }
-  }
-  
-  :deep(.el-card__body) {
-    padding: 0;
-    display: flex;
-    height: 600px;
-  }
-}
-
-.agreement-content {
-  display: flex;
-  width: 100%;
-  height: 100%;
-}
-
-.agreement-nav {
-  width: 200px;
-  border-right: 1px solid #e6e8eb;
-  background: #f8f9fa;
-  
-  .nav-items {
-    padding: 16px 0;
-  }
-  
-  .nav-item {
-    padding: 12px 20px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    border-left: 3px solid transparent;
-    font-size: 14px;
-    color: #606266;
-    
-    &:hover {
-      background: #eef0f3;
-      color: #409eff;
-    }
-    
-    &.active {
-      background: #ecf5ff;
-      color: #409eff;
-      border-left-color: #409eff;
-      font-weight: 500;
-    }
-  }
-}
-
-.agreement-text {
-  flex: 1;
-  padding: 24px;
-  overflow-y: auto;
-  height: 100%;
-  line-height: 1.6;
-}
-
-.agreement-section {
-  margin-bottom: 32px;
-  
-  h3 {
-    color: #303133;
-    margin-bottom: 16px;
-    padding-bottom: 8px;
-    border-bottom: 2px solid #409eff;
-    font-size: 1.3em;
-    font-weight: 600;
-  }
-  
-  p {
-    margin-bottom: 12px;
-    color: #606266;
-    text-align: justify;
-  }
-}
-
-.prohibited-list,
-.guidelines-list,
-.privacy-list,
-.termination-list {
-  margin: 12px 0;
-  padding-left: 24px;
-  
-  li {
-    margin-bottom: 8px;
-    color: #606266;
-    line-height: 1.5;
-  }
-}
-
-.prohibited-list li {
-  color: #f56c6c;
-}
-
-.guidelines-list li {
-  color: #67c23a;
-}
-
-.contact-info {
-  background: #f0f9ff;
-  padding: 16px;
-  border-radius: 8px;
-  border-left: 4px solid #409eff;
-  
-  p {
-    margin: 8px 0;
-    color: #303133;
-    font-weight: 500;
-  }
-}
-
-.agreement-footer {
   text-align: center;
-  padding: 16px;
-  
-  .el-button {
-    min-width: 160px;
-    margin: 0 8px;
-  }
-}
-
-// 响应式设计
-@media (max-width: 768px) {
-  .user-agreement {
-    padding: 10px;
-  }
-  
-  .agreement-content {
-    flex-direction: column;
-    height: auto;
-  }
-  
-  .agreement-nav {
-    width: 100%;
-    border-right: none;
-    border-bottom: 1px solid #e6e8eb;
-    
-    .nav-items {
-      display: flex;
-      overflow-x: auto;
-      padding: 12px 16px;
-      
-      .nav-item {
-        white-space: nowrap;
-        border-left: none;
-        border-bottom: 2px solid transparent;
-        padding: 8px 16px;
-        
-        &.active {
-          border-left-color: transparent;
-          border-bottom-color: #409eff;
-        }
-      }
-    }
-  }
-  
-  .agreement-text {
-    padding: 16px;
-  }
-  
-  .agreement-footer {
-    .el-button {
-      width: 100%;
-      margin: 4px 0;
-    }
-  }
-}
-
-// 滚动条样式
-:deep(.el-scrollbar__bar) {
-  opacity: 0.6;
-}
-
-:deep(.el-scrollbar__thumb) {
-  background-color: #c0c4cc;
-  
-  &:hover {
-    background-color: #909399;
-  }
-}
-
-// 打印样式
-@media print {
-  .agreement-nav,
-  .agreement-footer {
-    display: none;
-  }
-  
-  .agreement-card {
-    border: none;
-    box-shadow: none;
-  }
-  
-  .agreement-content {
-    height: auto;
-  }
+  border: 1px solid #e4e7ed;
+  border-radius: 8px;
+  margin: 10px;
 }
 </style>
